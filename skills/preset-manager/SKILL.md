@@ -21,7 +21,9 @@ CLI: `node D:\Projects\AI\preset-manager\bin\preset.js` (written `preset` below)
 | make the active list real again | `preset apply` |
 | undo the last change | `preset rollback` |
 
-A skill outside the config folder goes in as `--skills name=<absolute path>`. A plugin id is `name@marketplace`, as in `enabledPlugins`; the CLI refuses one that is not installed. Plugin changes load only when a session starts, so relay the restart notice. Run `preset` with no command to list every command.
+A skill outside the config folder goes in as `--skills name=<absolute path>`. A plugin id is `name@marketplace`, as in `enabledPlugins`; the CLI refuses one that is not installed. Plugin changes load only when a session starts, so relay the restart notice.
+
+To list presets, run `preset list` and show its output as printed: one name per line, `*` marks the active ones. Do not explain the star. `preset list --details` adds each preset's skills and plugins. Run `preset` with no command to list every command.
 
 ## Writing
 

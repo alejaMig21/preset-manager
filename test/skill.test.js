@@ -41,6 +41,9 @@ test('the skill states the dry-run rule, the proposal rule and the restart notic
   assert.match(t, /`preset suggest/);
   assert.match(t, /verdict/i);
   assert.match(t, /\bcovered\b/i);
+  // the list is shown exactly as printed, without explaining the star
+  assert.match(t, /`preset list`.*as printed|as printed.*`preset list`/is);
+  assert.match(t, /Do not explain the star/);
   // plugins belong to presets now
   assert.match(t, /--plugins/);
   assert.match(t, /--add-plugins/);

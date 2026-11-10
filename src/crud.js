@@ -123,9 +123,15 @@ function remove(p, args, v) {
   return lines.join('\n');
 }
 
-function show(p) {
+function show(p, details) {
   const presets = store.loadPresets(p);
   const active = new Set(store.loadActive(p).map((a) => a.name));
+  if (!details) {
+    // One name per line; "*" marks the active ones, and default is always on.
+    return Object.keys(presets)
+      .map((n) => `${n === 'default' || active.has(n) ? '*' : ' '} ${n}${n === 'default' ? ' (always on)' : ''}`)
+      .join('\n');
+  }
   return Object.values(presets)
     .map((x) => `${x.name}: ${names(x.skills) || '(no skills)'}${x.plugins.length ? ` | plugins: ${x.plugins.join(', ')}` : ''}${active.has(x.name) ? ' [active]' : ''}`)
     .join('\n');

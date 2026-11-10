@@ -14,6 +14,7 @@ const OPTIONS = {
   presets: { type: 'string' },
   from: { type: 'string' },
   yes: { type: 'boolean' },
+  details: { type: 'boolean' },
   skills: { type: 'string' },
   add: { type: 'string' },
   remove: { type: 'string' },
@@ -37,7 +38,7 @@ const COMMANDS = {
     ].join('\n');
   },
 
-  list: (p) => crud.show(p),
+  list: (p, args, v) => crud.show(p, v.details),
 
   unassigned(p) {
     const { names } = skills.unassigned(p, store.loadPresets(p));

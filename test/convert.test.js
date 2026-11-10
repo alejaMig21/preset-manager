@@ -112,7 +112,7 @@ test('convert writes default, prototyping and additive presets and drops the ret
 test('the converted presets are readable by the rest of the tool', (t) => {
   const f = setupOld(t);
   h.run(f, ['convert', '--yes']);
-  const r = h.run(f, ['list']);
+  const r = h.run(f, ['list', '--details']);
   assert.strictEqual(r.code, 0, r.err);
   assert.match(r.out, /prototyping: mockup-to-prototype/);
 });

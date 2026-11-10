@@ -80,7 +80,7 @@ test('a preset may hold only plugins', (t) => {
   assert.strictEqual(r.code, 0, r.err);
   assert.deepStrictEqual(def(f, 'usage').skills, []);
   assert.deepStrictEqual(def(f, 'usage').plugins, [HUD]);
-  assert.match(h.run(f, ['list']).out, /usage: \(no skills\) \| plugins: claude-hud@claude-hud/);
+  assert.match(h.run(f, ['list', '--details']).out, /usage: \(no skills\) \| plugins: claude-hud@claude-hud/);
 });
 
 test('a plugin-only preset is added and removed like any other', (t) => {
@@ -135,7 +135,7 @@ test('updating the plugins of an active preset says to apply', (t) => {
 test('list shows plugins next to skills', (t) => {
   const f = setup(t);
   h.run(f, ['update', 'engineering', '--add-plugins', UNITY, '--yes']);
-  const r = h.run(f, ['list']);
+  const r = h.run(f, ['list', '--details']);
   assert.match(r.out, /engineering: tdd \| plugins: unity@unity-agent-plugin/);
   assert.match(r.out, /default: find-skills, preset-manager, skill-creator, dev-journal$/m);
 });

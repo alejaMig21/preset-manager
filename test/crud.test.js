@@ -70,7 +70,7 @@ test('update adds and removes skills and list shows the result', (t) => {
   const r = h.run(f, ['update', 'engineering', '--add', 'code-review,grilling', '--remove', 'tdd', '--yes']);
   assert.strictEqual(r.code, 0, r.err);
   assert.deepStrictEqual(skillsOf(f, 'engineering').map((s) => s.name), ['code-review', 'grilling']);
-  assert.match(h.run(f, ['list']).out, /engineering: code-review, grilling/);
+  assert.match(h.run(f, ['list', '--details']).out, /engineering: code-review, grilling/);
 });
 
 test('update without --yes changes nothing and removing a non-member is refused', (t) => {
@@ -143,7 +143,7 @@ test('default can never be deleted', (t) => {
 
 test('list shows every preset with its skills', (t) => {
   const f = setup(t);
-  const r = h.run(f, ['list']);
+  const r = h.run(f, ['list', '--details']);
   assert.strictEqual(r.code, 0, r.err);
   assert.match(r.out, /default: find-skills, preset-manager, skill-creator, dev-journal/);
   assert.match(r.out, /engineering: tdd/);
