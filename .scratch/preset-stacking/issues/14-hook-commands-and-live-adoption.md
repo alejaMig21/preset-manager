@@ -4,11 +4,11 @@
 
 **Blocked by:** 13
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] `hook define` writes a valid hook into the named preset and refuses an unknown preset, a repeated id or a missing command
 - [x] `hook adopt` copies the numbered hook's event, matcher and command, refuses a number out of range or an already managed hook, and leaves `settings.json` unchanged
 - [x] `hook drop` removes the hook from the definition and refuses an unknown id
 - [x] `update` and `create` keep the hooks of a preset
 - [x] `list --details` shows each preset's hooks
-- [ ] The person approved every hook definition before it was written
+- [x] The person approved every hook definition before it was written (adopted and defined, then moved to the local folder by ticket 15; hook 4 left unmanaged on purpose)
