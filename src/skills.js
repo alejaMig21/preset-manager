@@ -79,4 +79,11 @@ function checkSource(p, name, source) {
   if (!isDir(dir) || !hasSkill(dir)) throw bad(`is not a skill folder (${dir})`);
 }
 
-module.exports = { scan, sourceOf, checkSource };
+// Installed skills that no preset names, plus broken links.
+function unassigned(p, presets) {
+  const { installed, broken } = scan(p);
+  const managed = new Set(Object.values(presets).flatMap((x) => x.skills.map((s) => s.name)));
+  return { names: [...installed.keys()].filter((n) => !managed.has(n)).sort(), broken };
+}
+
+module.exports = { scan, sourceOf, checkSource, unassigned };

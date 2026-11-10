@@ -4,11 +4,15 @@
 
 **Blocked by:** 06
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The install folder of `skills add -g` is documented in the ticket's result
-- [ ] The install command shows the exact `settings.json` change and writes nothing without confirmation
-- [ ] After confirmation the hook is present and `settings.json` is still valid JSON
-- [ ] Simulating a `skills add` run with unassigned skills produces the nudge message
-- [ ] Simulating it with none produces no message
-- [ ] The hook never writes any preset or skill file
+- [x] The install folder of `skills add -g` is documented in the ticket's result (see Result below)
+- [x] The install command shows the exact `settings.json` change and writes nothing without confirmation
+- [x] After confirmation the hook is present and `settings.json` is still valid JSON
+- [x] Simulating a `skills add` run with unassigned skills produces the nudge message
+- [x] Simulating it with none produces no message
+- [x] The hook never writes any preset or skill file
+
+## Result: where `skills add -g` installs
+
+Read-only research, nothing was installed. The skills CLI documents `~/.claude/skills/` as the global path for Claude Code (`~/.agents/skills/` is for other agents such as Codex). On this machine the only skill the CLI installed for Claude Code, `find-skills`, is a link in `~/.claude/skills/` pointing at a canonical copy in `~/.agents/skills/`. Either way a newly installed skill shows up as an entry directly under `~/.claude/skills/`, which is exactly what the unassigned-skills scan reads. The hook therefore triggers on the Bash command text and then scans; it does not depend on the install folder. If the CLI ever installed only into `~/.agents/skills/`, Claude Code would not see the skill and there would be nothing to assign.

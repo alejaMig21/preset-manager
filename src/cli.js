@@ -4,6 +4,7 @@ const plan = require('./plan');
 const apply = require('./apply');
 const skills = require('./skills');
 const crud = require('./crud');
+const hook = require('./hook');
 const { change, reconcile } = require('./reconcile');
 
 const OPTIONS = {
@@ -16,18 +17,11 @@ const OPTIONS = {
   description: { type: 'string' },
 };
 
-// Skills installed under the config root that no preset names.
-function unassigned(p, presets) {
-  const { installed, broken } = skills.scan(p);
-  const managed = new Set(Object.values(presets).flatMap((x) => x.skills.map((s) => s.name)));
-  return { names: [...installed.keys()].filter((n) => !managed.has(n)).sort(), broken };
-}
-
 const COMMANDS = {
   status(p) {
     const presets = store.loadPresets(p);
     const active = store.loadActive(p);
-    const { names, broken } = unassigned(p, presets);
+    const { names, broken } = skills.unassigned(p, presets);
     return [
       `Active presets: ${active.length ? active.map((a) => `${a.name} (since ${a.since})`).join(', ') : '(none)'}`,
       `Known presets: ${Object.keys(presets).join(', ')}`,
@@ -39,7 +33,7 @@ const COMMANDS = {
   list: (p) => crud.show(p),
 
   orphans(p) {
-    const { names } = unassigned(p, store.loadPresets(p));
+    const { names } = skills.unassigned(p, store.loadPresets(p));
     return names.length ? `Unassigned skills (no preset names them):\n${names.map((n) => `  ${n}`).join('\n')}` : 'No unassigned skills.';
   },
 
@@ -53,6 +47,8 @@ const COMMANDS = {
   },
 
   rollback: (p, args, v) => apply.rollback(p, v.yes),
+
+  hook: (p, args, v) => hook.run(p, args[0], v.yes),
 
   create: (p, args, v) => crud.create(p, args, v),
   update: (p, args, v) => crud.update(p, args, v),
@@ -78,4 +74,4 @@ function main(argv) {
   }
 }
 
-module.exports = { main, unassigned };
+module.exports = { main };

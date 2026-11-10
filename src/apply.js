@@ -142,6 +142,18 @@ function applyChange(p, { actions, nextEntries, settings, desired }) {
   }
 }
 
+// Writes settings.json alone (for example to install the hook) behind the same backup and validation.
+function writeSettings(p, settings) {
+  const backup = makeBackup(p, []);
+  try {
+    writeAtomic(p.settings, `${JSON.stringify(settings, null, 2)}\n`);
+    readJsonFile(p.settings);
+  } catch (e) {
+    restore(p, backup);
+    throw new UserError(`write failed and was rolled back: ${e.message}`);
+  }
+}
+
 function lastBackup(p) {
   const names = fs.existsSync(p.backups)
     ? fs.readdirSync(p.backups).filter((n) => !n.endsWith('.rolled-back')).sort()
@@ -171,4 +183,4 @@ const restartNotice = (needed) =>
     ? 'Restart the session so Claude reads the updated CLAUDE.md text.'
     : 'Already active: no restart needed.';
 
-module.exports = { applyChange, rollback, restartNotice };
+module.exports = { applyChange, writeSettings, rollback, restartNotice };
