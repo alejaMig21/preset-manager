@@ -96,7 +96,7 @@ A zero-dependency Node CLI plus a thin skill. Presets become additive and stack:
 
 ## Out of Scope
 
-- The `statusLine` setting and the `claude-hud` plugin (plugins themselves joined the presets: see the addendum and ADR 0006).
+- The `statusLine` setting (plugins joined the presets: see the addendum and ADR 0006).
 - Per-project active presets (global only for now).
 - Reading the old preset format after the one-time conversion.
 - Managing skills no preset names, and skills provided by plugins.
@@ -116,10 +116,11 @@ Stories:
 53. As the owner, I want a preset to list plugins, so that one command turns on everything a working style needs.
 54. As the owner, I want `default` to carry the base plugins, so that they are always on.
 55. As the owner, I want plugins no active preset asks for switched off, so that `unity` costs nothing outside `gamedev`.
-56. As the owner, I want plugins no preset names left alone, so that `claude-hud` and anything I enabled by hand stay as they are.
+56. As the owner, I want plugins no preset names left alone, so that anything I enabled by hand stays as it is.
 57. As the owner, I want a plugin change to print the restart notice, so that I know Claude has not loaded it yet.
 58. As the owner, I want `create` and `update` to take plugins and to refuse one that is not installed, so that a typo cannot break a preset.
 59. As the owner, I want `status` to list plugins that have no preset, so that I see what the presets do not manage.
 60. As the owner, I want `rollback` to restore the plugin switches too, so that undoing a change is complete.
+61. As the owner, I want a preset that holds only plugins, so that `usage` can carry `claude-hud` by itself.
 
 Decisions: a definition gains an optional `plugins` list; plugin actions are `plugin+` and `plugin-` in the plan; managed plugins are those named by any preset; an unknown or uninstalled plugin is refused, both when writing a definition and when planning. Tests keep the single seam (the real CLI against a fake root).

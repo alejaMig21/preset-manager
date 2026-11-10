@@ -28,7 +28,7 @@ A skill named in at least one preset. Only managed skills are switched on or off
 _Avoid_: Known skill, universe
 
 **Managed plugin**:
-A plugin named in at least one preset. Only managed plugins are switched on or off by the tool; every other plugin, such as `claude-hud`, is left alone.
+A plugin named in at least one preset. Only managed plugins are switched on or off by the tool; every other plugin, such as one enabled by hand, is left alone.
 
 **Unassigned skill**:
 An installed skill that no preset names.

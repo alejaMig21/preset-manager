@@ -1,0 +1,8 @@
+{
+  "name": "usage",
+  "description": "Usage bar: the claude-hud plugin.",
+  "skills": [],
+  "plugins": [
+    "claude-hud@claude-hud"
+  ]
+}
