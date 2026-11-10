@@ -105,10 +105,45 @@ function fragmentBytes(p, presets, activeNames) {
   );
 }
 
+// Plugins Claude Code knows about: the installed ones plus any already named in enabledPlugins.
+function knownPlugins(p, settings) {
+  const known = new Set(Object.keys(settings.enabledPlugins || {}));
+  const file = path.join(p.root, 'plugins', 'installed_plugins.json');
+  if (fs.existsSync(file)) {
+    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    for (const id of Object.keys(data.plugins || data)) known.add(id);
+  }
+  return known;
+}
+
+// Plugin actions: plugin+ (turn on), plugin- (turn off). Only managed plugins; the rest are left alone.
+function pluginActions(p, presets, activeNames, settings) {
+  const enabled = settings.enabledPlugins || {};
+  const managed = new Set(Object.values(presets).flatMap((x) => x.plugins));
+  const wanted = new Set(['default', ...activeNames].flatMap((n) => presets[n].plugins));
+  const known = knownPlugins(p, settings);
+  const actions = [];
+  for (const id of [...managed].sort()) {
+    if (wanted.has(id)) {
+      if (!known.has(id)) throw new UserError(`plugin "${id}" is not installed (a preset you are applying names it)`);
+      if (enabled[id] !== true) actions.push({ kind: 'plugin+', name: id });
+    } else if (enabled[id] === true) {
+      actions.push({ kind: 'plugin-', name: id });
+    }
+  }
+  return actions;
+}
+
+// Known plugins that no preset names.
+function unmanagedPlugins(p, presets, settings) {
+  const managed = new Set(Object.values(presets).flatMap((x) => x.plugins));
+  return [...knownPlugins(p, settings)].filter((id) => !managed.has(id)).sort();
+}
+
 function format(actions) {
   return actions
     .map((a) => `  ${a.kind.padEnd(7)} ${a.name}${a.target ? ` -> ${a.target}` : ''}`)
     .join('\n');
 }
 
-module.exports = { skillActions, blockActions, desiredBlocks, fragmentBytes, format };
+module.exports = { skillActions, blockActions, pluginActions, unmanagedPlugins, desiredBlocks, fragmentBytes, format };

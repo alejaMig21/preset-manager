@@ -5,7 +5,7 @@ Stacks several named presets of Claude Code skills and text on one machine, so a
 ## Language
 
 **Preset**:
-A named set of skills that are turned on plus one optional text fragment. Several presets can be active at once.
+A named set of skills and plugins that are turned on plus one optional text fragment. Several presets can be active at once.
 _Avoid_: Profile, mode, bundle
 
 **Active preset**:
@@ -26,6 +26,9 @@ The skills `find-skills`, `preset-manager`, `skill-creator` and `dev-journal`; t
 **Managed skill**:
 A skill named in at least one preset. Only managed skills are switched on or off by the tool; every other skill is left alone.
 _Avoid_: Known skill, universe
+
+**Managed plugin**:
+A plugin named in at least one preset. Only managed plugins are switched on or off by the tool; every other plugin, such as `claude-hud`, is left alone.
 
 **Unassigned skill**:
 An installed skill that no preset names.

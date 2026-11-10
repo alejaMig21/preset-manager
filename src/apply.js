@@ -99,7 +99,14 @@ function restore(p, dir) {
 function signature(p) {
   const read = (f) => (fs.existsSync(f) ? fs.readFileSync(f, 'utf8') : '');
   const copies = fs.existsSync(p.stateFragments) ? fs.readdirSync(p.stateFragments).sort() : [];
-  return [read(p.claudeMd), ...copies.map((n) => `${n}\0${read(path.join(p.stateFragments, n))}`)].join('\u0001');
+  const plugins = (() => {
+    try {
+      return JSON.stringify(JSON.parse(read(p.settings)).enabledPlugins || {});
+    } catch {
+      return '';
+    }
+  })();
+  return [read(p.claudeMd), plugins, ...copies.map((n) => `${n}\0${read(path.join(p.stateFragments, n))}`)].join('\u0001');
 }
 
 function applyBlocks(p, actions, desired) {
@@ -124,13 +131,21 @@ function applyChange(p, { actions, nextEntries, settings, desired }) {
     }
     applyBlocks(p, actions, desired);
     const switches = actions.filter((a) => a.kind === 'on' || a.kind === 'off');
-    if (switches.length) {
-      const overrides = { ...(settings.skillOverrides || {}) };
-      for (const a of switches) {
-        if (a.kind === 'on') delete overrides[a.name];
-        else overrides[a.name] = 'off';
+    const plugins = actions.filter((a) => a.kind === 'plugin+' || a.kind === 'plugin-');
+    if (switches.length || plugins.length) {
+      const next = { ...settings };
+      if (switches.length) {
+        const overrides = { ...(settings.skillOverrides || {}) };
+        for (const a of switches) {
+          if (a.kind === 'on') delete overrides[a.name];
+          else overrides[a.name] = 'off';
+        }
+        next.skillOverrides = overrides;
       }
-      writeAtomic(p.settings, `${JSON.stringify({ ...settings, skillOverrides: overrides }, null, 2)}\n`);
+      if (plugins.length) {
+        next.enabledPlugins = { ...(settings.enabledPlugins || {}), ...Object.fromEntries(plugins.map((a) => [a.name, a.kind === 'plugin+'])) };
+      }
+      writeAtomic(p.settings, `${JSON.stringify(next, null, 2)}\n`);
     }
     writeAtomic(p.activeFile, `${JSON.stringify({ active: nextEntries }, null, 2)}\n`);
     // Test seam for the safety net: simulate a write that leaves settings.json broken.
@@ -183,7 +198,7 @@ function rollback(p, yes) {
 
 const restartNotice = (needed) =>
   needed
-    ? 'Restart the session so Claude reads the updated CLAUDE.md text.'
+    ? 'Restart the session so Claude reads the updated CLAUDE.md text and plugins.'
     : 'Already active: no restart needed.';
 
 module.exports = { applyChange, writeSettings, rollback, restartNotice };

@@ -7,8 +7,10 @@ class UserError extends Error {}
 
 // A preset or skill name is a plain folder/file name, never a path.
 const NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
+const PLUGIN = /^[A-Za-z0-9][\w.-]*@[A-Za-z0-9][\w.-]*$/; // "name@marketplace", as in enabledPlugins
 const stamp = () => new Date().toISOString().replace(/[:.]/g, '-');
-const definitionText = (name, description, skills) => `${JSON.stringify({ name, description, skills }, null, 2)}\n`;
+const definitionText = (name, description, skills, plugins = []) =>
+  `${JSON.stringify({ name, description, skills, ...(plugins.length ? { plugins } : {}) }, null, 2)}\n`;
 
 function paths(opts) {
   const root = path.resolve(opts.root || path.join(os.homedir(), '.claude'));
@@ -50,6 +52,9 @@ function validatePreset(file, stem, data) {
     // The name becomes a path under <root>/skills, so it must be a plain folder name.
     if (!NAME.test(s.name)) throw bad(`invalid skill name "${s.name}"`);
   }
+  if (data.plugins !== undefined && (!Array.isArray(data.plugins) || data.plugins.some((x) => typeof x !== 'string' || !PLUGIN.test(x)))) {
+    throw bad('"plugins" must be a list of "name@marketplace" ids');
+  }
 }
 
 // Returns { <name>: { name, description, skills: [{name, source}], hasFragment } }.
@@ -66,6 +71,7 @@ function loadPresets(p) {
       name: stem,
       description: data.description || '',
       skills: data.skills,
+      plugins: data.plugins || [],
       hasFragment: fs.existsSync(path.join(p.fragments, `${stem}.md`)),
     };
   }
@@ -89,4 +95,4 @@ function loadSettings(p) {
   return data;
 }
 
-module.exports = { UserError, NAME, stamp, definitionText, paths, readJsonFile, loadPresets, loadActive, loadSettings };
+module.exports = { UserError, NAME, PLUGIN, stamp, definitionText, paths, readJsonFile, loadPresets, loadActive, loadSettings };
