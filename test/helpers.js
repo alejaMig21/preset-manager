@@ -55,6 +55,19 @@ function makeExternalSkill(f, name) {
   return dir;
 }
 
+// Pre-existing junction <root>/skills/<name> -> target, as the old system left them.
+function linkSkill(f, name, target) {
+  fs.symlinkSync(target, path.join(f.root, 'skills', name), 'junction');
+}
+
+function isLink(f, name) {
+  try {
+    return fs.lstatSync(path.join(f.root, 'skills', name)).isSymbolicLink();
+  } catch {
+    return false;
+  }
+}
+
 function writeActive(f, names) {
   const dir = path.join(f.root, 'preset-manager');
   fs.mkdirSync(dir, { recursive: true });
@@ -91,6 +104,6 @@ function cleanup(f) {
 }
 
 module.exports = {
-  fake, run, writePreset, writeFragment, makeSkill, makeExternalSkill, writeActive,
+  fake, run, writePreset, writeFragment, makeSkill, makeExternalSkill, linkSkill, isLink, writeActive,
   readJson, readSettings, writeSettings, activeNames, cleanup,
 };

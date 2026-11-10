@@ -4,12 +4,12 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Adding a preset plans its skills on and leaves the rest as they are
-- [ ] Removing a preset plans off only managed skills that no remaining active preset asks for
-- [ ] `default` skills are planned on even when `default` is not in the active list
-- [ ] An unassigned skill never appears in the plan
-- [ ] An external-source skill is planned as an in-place junction
-- [ ] Running the command changes no file in the fake config folder
-- [ ] Adding an already active preset or removing an inactive one reports it and plans nothing
+- [x] Adding a preset plans its skills on and leaves the rest as they are
+- [x] Removing a preset plans off only managed skills that no remaining active preset asks for
+- [x] `default` skills are planned on even when `default` is not in the active list
+- [x] An unassigned skill never appears in the plan
+- [x] An external-source skill is planned as an in-place junction
+- [x] Running the command changes no file in the fake config folder
+- [x] Adding an already active preset or removing an inactive one reports it and plans nothing

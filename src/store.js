@@ -40,6 +40,8 @@ function validatePreset(file, stem, data) {
     if (!s || typeof s.name !== 'string' || typeof s.source !== 'string') {
       throw bad('every skill needs a string "name" and "source"');
     }
+    // The name becomes a path under <root>/skills, so it must be a plain folder name.
+    if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(s.name)) throw bad(`invalid skill name "${s.name}"`);
   }
 }
 
@@ -71,4 +73,13 @@ function loadActive(p) {
   return data.active;
 }
 
-module.exports = { UserError, paths, readJsonFile, loadPresets, loadActive };
+function loadSettings(p) {
+  if (!fs.existsSync(p.settings)) return {};
+  const data = readJsonFile(p.settings);
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new UserError(`${p.settings}: must be a JSON object`);
+  }
+  return data;
+}
+
+module.exports = { UserError, paths, readJsonFile, loadPresets, loadActive, loadSettings };

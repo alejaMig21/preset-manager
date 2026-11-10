@@ -1,5 +1,6 @@
 const { parseArgs } = require('node:util');
 const store = require('./store');
+const plan = require('./plan');
 
 const OPTIONS = {
   root: { type: 'string' },
@@ -17,7 +18,28 @@ const COMMANDS = {
       `Known presets: ${names.join(', ')}`,
     ].join('\n');
   },
+
+  add: (p, args) => change(p, 'add', args[0]),
+  remove: (p, args) => change(p, 'remove', args[0]),
 };
+
+// add/remove: compute the new active list, then the skill actions that reach it.
+function change(p, kind, name) {
+  if (!name) throw new store.UserError(`usage: preset ${kind} <preset>`);
+  const presets = store.loadPresets(p);
+  if (!presets[name]) throw new store.UserError(`preset "${name}" not found`);
+  if (name === 'default') throw new store.UserError('"default" is always on and cannot be added or removed');
+  const active = store.loadActive(p);
+  const isActive = active.some((a) => a.name === name);
+  if (kind === 'add' && isActive) return `Preset "${name}" is already active. Nothing to do.`;
+  if (kind === 'remove' && !isActive) return `Preset "${name}" is not active. Nothing to do.`;
+  const next = kind === 'add' ? [...active.map((a) => a.name), name] : active.map((a) => a.name).filter((n) => n !== name);
+  const actions = plan.skillActions(p, presets, next, store.loadSettings(p));
+  return [
+    `Plan to ${kind} "${name}" (dry run, nothing written):`,
+    actions.length ? plan.format(actions) : '  (no skill changes)',
+  ].join('\n');
+}
 
 function main(argv) {
   let parsed;
