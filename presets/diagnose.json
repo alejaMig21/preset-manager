@@ -1,0 +1,10 @@
+{
+  "name": "diagnose",
+  "description": "Diagnose frozen or slow live processes.",
+  "skills": [
+    {
+      "name": "py-spy-diagnose",
+      "source": "top"
+    }
+  ]
+}

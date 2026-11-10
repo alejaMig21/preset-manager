@@ -1,0 +1,26 @@
+{
+  "name": "git-workflow",
+  "description": "Pull requests, issues, comments and commit hygiene (Gentle AI set).",
+  "skills": [
+    {
+      "name": "chained-pr",
+      "source": "top"
+    },
+    {
+      "name": "issue-creation",
+      "source": "top"
+    },
+    {
+      "name": "comment-writer",
+      "source": "top"
+    },
+    {
+      "name": "work-unit-commits",
+      "source": "top"
+    },
+    {
+      "name": "git-per-file-commit",
+      "source": "top"
+    }
+  ]
+}
