@@ -1,0 +1,14 @@
+{
+  "name": "gamedev",
+  "description": "Game and 3D development: Unity best practices and Blender addon packaging.",
+  "skills": [
+    {
+      "name": "unity-best-practices",
+      "source": "top"
+    },
+    {
+      "name": "blender-addon-zip",
+      "source": "top"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "name": "design_bundles",
+  "description": "Design preset: bundles skills.",
+  "skills": [
+    {
+      "name": "anthropics-skills",
+      "source": "design/anthropics-skills"
+    },
+    {
+      "name": "awesome-design-skills",
+      "source": "design/awesome-design-skills"
+    },
+    {
+      "name": "claud3",
+      "source": "design/claud3"
+    },
+    {
+      "name": "claudedesignskills",
+      "source": "design/claudedesignskills"
+    },
+    {
+      "name": "composio-artifacts",
+      "source": "design/composio-artifacts"
+    },
+    {
+      "name": "design-catalogue",
+      "source": "design/design-catalogue"
+    },
+    {
+      "name": "design-engineering-catalogue",
+      "source": "design/design-engineering-catalogue"
+    },
+    {
+      "name": "microsoft-skills",
+      "source": "design/microsoft-skills"
+    },
+    {
+      "name": "openai-skills",
+      "source": "design/openai-skills"
+    },
+    {
+      "name": "mastepanoski-skills",
+      "source": "design/mastepanoski-skills"
+    },
+    {
+      "name": "nimbalyst-skills",
+      "source": "design/nimbalyst-skills"
+    },
+    {
+      "name": "simota-agent-skills",
+      "source": "design/simota-agent-skills"
+    },
+    {
+      "name": "softaworks-agent-toolkit",
+      "source": "design/softaworks-agent-toolkit"
+    },
+    {
+      "name": "vercel-skills",
+      "source": "design/vercel-skills"
+    },
+    {
+      "name": "wondelai-skills",
+      "source": "design/wondelai-skills"
+    },
+    {
+      "name": "cloudflare-web-perf",
+      "source": "design/cloudflare-web-perf"
+    },
+    {
+      "name": "designer-skills",
+      "source": "design/designer-skills"
+    },
+    {
+      "name": "design-with-claude",
+      "source": "design/design-with-claude"
+    },
+    {
+      "name": "addyosmani-quality",
+      "source": "design/addyosmani-quality"
+    }
+  ]
+}

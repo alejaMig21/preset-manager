@@ -1,0 +1,34 @@
+{
+  "name": "productivity",
+  "description": "Productivity skills plus learn and doc-coauthoring.",
+  "skills": [
+    {
+      "name": "grill-me",
+      "source": "productivity/grill-me"
+    },
+    {
+      "name": "grilling",
+      "source": "productivity/grilling"
+    },
+    {
+      "name": "handoff",
+      "source": "productivity/handoff"
+    },
+    {
+      "name": "teach",
+      "source": "productivity/teach"
+    },
+    {
+      "name": "to-questionnaire",
+      "source": "productivity/to-questionnaire"
+    },
+    {
+      "name": "wait-what",
+      "source": "productivity/wait-what"
+    },
+    {
+      "name": "writing-for-agents",
+      "source": "productivity/writing-for-agents"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "default",
+  "description": "Always on: the base skills.",
+  "skills": [
+    {
+      "name": "find-skills",
+      "source": "top"
+    },
+    {
+      "name": "preset-manager",
+      "source": "top"
+    },
+    {
+      "name": "skill-creator",
+      "source": "top"
+    },
+    {
+      "name": "dev-journal",
+      "source": "top"
+    }
+  ]
+}

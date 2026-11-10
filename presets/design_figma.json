@@ -1,0 +1,30 @@
+{
+  "name": "design_figma",
+  "description": "Design preset: figma skills.",
+  "skills": [
+    {
+      "name": "figma-catalogue",
+      "source": "design/figma-catalogue"
+    },
+    {
+      "name": "figma-official-skills",
+      "source": "design/figma-official-skills"
+    },
+    {
+      "name": "figma-skill",
+      "source": "design/figma-skill"
+    },
+    {
+      "name": "figma-variables-tokens-generator",
+      "source": "design/figma-variables-tokens-generator"
+    },
+    {
+      "name": "claude2figma",
+      "source": "design/claude2figma"
+    },
+    {
+      "name": "google-stitch-skills",
+      "source": "design/google-stitch-skills"
+    }
+  ]
+}

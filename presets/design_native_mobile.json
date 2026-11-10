@@ -1,0 +1,62 @@
+{
+  "name": "design_native_mobile",
+  "description": "Design preset: native mobile skills.",
+  "skills": [
+    {
+      "name": "apple-hig-skills",
+      "source": "design/apple-hig-skills"
+    },
+    {
+      "name": "hig-doctor",
+      "source": "design/hig-doctor"
+    },
+    {
+      "name": "swiftui-claude-skills",
+      "source": "design/swiftui-claude-skills"
+    },
+    {
+      "name": "swiftui-design-skill",
+      "source": "design/swiftui-design-skill"
+    },
+    {
+      "name": "swiftui-patterns",
+      "source": "design/swiftui-patterns"
+    },
+    {
+      "name": "expo-skills",
+      "source": "design/expo-skills"
+    },
+    {
+      "name": "mobile-app-design",
+      "source": "design/mobile-app-design"
+    },
+    {
+      "name": "mobile-app-ui-design",
+      "source": "design/mobile-app-ui-design"
+    },
+    {
+      "name": "sleek-design-mobile-apps",
+      "source": "design/sleek-design-mobile-apps"
+    },
+    {
+      "name": "platform-design-skills",
+      "source": "design/platform-design-skills"
+    },
+    {
+      "name": "material-3-skill",
+      "source": "design/material-3-skill"
+    },
+    {
+      "name": "software-mansion-skills",
+      "source": "design/software-mansion-skills"
+    },
+    {
+      "name": "callstack-agent-skills",
+      "source": "design/callstack-agent-skills"
+    },
+    {
+      "name": "react-doctor",
+      "source": "design/react-doctor"
+    }
+  ]
+}

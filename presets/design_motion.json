@@ -1,0 +1,62 @@
+{
+  "name": "design_motion",
+  "description": "Design preset: motion skills.",
+  "skills": [
+    {
+      "name": "animate-skill",
+      "source": "design/animate-skill"
+    },
+    {
+      "name": "animate-css-skill",
+      "source": "design/animate-css-skill"
+    },
+    {
+      "name": "css-animation-skill",
+      "source": "design/css-animation-skill"
+    },
+    {
+      "name": "motion-catalogue",
+      "source": "design/motion-catalogue"
+    },
+    {
+      "name": "motion-design-skill",
+      "source": "design/motion-design-skill"
+    },
+    {
+      "name": "design-motion-principles",
+      "source": "design/design-motion-principles"
+    },
+    {
+      "name": "fixing-motion-performance",
+      "source": "design/fixing-motion-performance"
+    },
+    {
+      "name": "framer-motion-skills",
+      "source": "design/framer-motion-skills"
+    },
+    {
+      "name": "gsap-skills",
+      "source": "design/gsap-skills"
+    },
+    {
+      "name": "emilkowalski-skill",
+      "source": "design/emilkowalski-skill"
+    },
+    {
+      "name": "remotion",
+      "source": "design/remotion"
+    },
+    {
+      "name": "hyperframes",
+      "source": "design/hyperframes"
+    },
+    {
+      "name": "wiggle-claude-skill",
+      "source": "design/wiggle-claude-skill"
+    },
+    {
+      "name": "liquid-glass-skill",
+      "source": "design/liquid-glass-skill"
+    }
+  ]
+}

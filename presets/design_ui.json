@@ -1,0 +1,74 @@
+{
+  "name": "design_ui",
+  "description": "Design preset: ui skills.",
+  "skills": [
+    {
+      "name": "frontend-design",
+      "source": "design/frontend-design"
+    },
+    {
+      "name": "distinctive-frontend",
+      "source": "design/distinctive-frontend"
+    },
+    {
+      "name": "impeccable",
+      "source": "design/impeccable"
+    },
+    {
+      "name": "ui-craft",
+      "source": "design/ui-craft"
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "source": "design/ui-ux-pro-max"
+    },
+    {
+      "name": "make-interfaces-better",
+      "source": "design/make-interfaces-better"
+    },
+    {
+      "name": "interfaces-that-feel",
+      "source": "design/interfaces-that-feel"
+    },
+    {
+      "name": "interface-design-dammyjay",
+      "source": "design/interface-design-dammyjay"
+    },
+    {
+      "name": "taste-skill",
+      "source": "design/taste-skill"
+    },
+    {
+      "name": "taste-design-stitch",
+      "source": "design/taste-design-stitch"
+    },
+    {
+      "name": "superdesign-skill",
+      "source": "design/superdesign-skill"
+    },
+    {
+      "name": "shadcn-ui",
+      "source": "design/shadcn-ui"
+    },
+    {
+      "name": "baseline-ui",
+      "source": "design/baseline-ui"
+    },
+    {
+      "name": "open-design",
+      "source": "design/open-design"
+    },
+    {
+      "name": "design-html",
+      "source": "design/design-html"
+    },
+    {
+      "name": "huashu-design",
+      "source": "design/huashu-design"
+    },
+    {
+      "name": "bencium-ux-designer",
+      "source": "design/bencium-ux-designer"
+    }
+  ]
+}

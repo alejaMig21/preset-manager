@@ -1,0 +1,46 @@
+{
+  "name": "design_review",
+  "description": "Design preset: review skills.",
+  "skills": [
+    {
+      "name": "design-auditor",
+      "source": "design/design-auditor"
+    },
+    {
+      "name": "design-review-garrytan",
+      "source": "design/design-review-garrytan"
+    },
+    {
+      "name": "plan-design-review",
+      "source": "design/plan-design-review"
+    },
+    {
+      "name": "design-debt-audit",
+      "source": "design/design-debt-audit"
+    },
+    {
+      "name": "design-consultation",
+      "source": "design/design-consultation"
+    },
+    {
+      "name": "design-brief",
+      "source": "design/design-brief"
+    },
+    {
+      "name": "design-lab",
+      "source": "design/design-lab"
+    },
+    {
+      "name": "design-sprint",
+      "source": "design/design-sprint"
+    },
+    {
+      "name": "design-negotiation",
+      "source": "design/design-negotiation"
+    },
+    {
+      "name": "design-impact-reporting",
+      "source": "design/design-impact-reporting"
+    }
+  ]
+}

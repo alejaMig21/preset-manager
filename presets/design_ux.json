@@ -1,0 +1,70 @@
+{
+  "name": "design_ux",
+  "description": "Design preset: ux skills.",
+  "skills": [
+    {
+      "name": "ux-designer-skill",
+      "source": "design/ux-designer-skill"
+    },
+    {
+      "name": "ux-ui-mastery",
+      "source": "design/ux-ui-mastery"
+    },
+    {
+      "name": "interaction-design",
+      "source": "design/interaction-design"
+    },
+    {
+      "name": "information-architecture-and-navigation",
+      "source": "design/information-architecture-and-navigation"
+    },
+    {
+      "name": "search-ux",
+      "source": "design/search-ux"
+    },
+    {
+      "name": "software-ux-research",
+      "source": "design/software-ux-research"
+    },
+    {
+      "name": "user-research-cookiy",
+      "source": "design/user-research-cookiy"
+    },
+    {
+      "name": "neo-user-journey",
+      "source": "design/neo-user-journey"
+    },
+    {
+      "name": "service-blueprint",
+      "source": "design/service-blueprint"
+    },
+    {
+      "name": "ux-writing-skill",
+      "source": "design/ux-writing-skill"
+    },
+    {
+      "name": "localization-design",
+      "source": "design/localization-design"
+    },
+    {
+      "name": "dark-pattern-audit",
+      "source": "design/dark-pattern-audit"
+    },
+    {
+      "name": "design-for-ai",
+      "source": "design/design-for-ai"
+    },
+    {
+      "name": "wireframe-skill",
+      "source": "design/wireframe-skill"
+    },
+    {
+      "name": "wireframer",
+      "source": "design/wireframer"
+    },
+    {
+      "name": "claude-wireframe-skill",
+      "source": "design/claude-wireframe-skill"
+    }
+  ]
+}

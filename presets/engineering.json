@@ -1,0 +1,86 @@
+{
+  "name": "engineering",
+  "description": "Engineering skills (TDD, review, architecture, specs).",
+  "skills": [
+    {
+      "name": "ask-matt",
+      "source": "engineering/ask-matt"
+    },
+    {
+      "name": "code-review",
+      "source": "engineering/code-review"
+    },
+    {
+      "name": "codebase-design",
+      "source": "engineering/codebase-design"
+    },
+    {
+      "name": "diagnosing-bugs",
+      "source": "engineering/diagnosing-bugs"
+    },
+    {
+      "name": "domain-modeling",
+      "source": "engineering/domain-modeling"
+    },
+    {
+      "name": "grill-with-docs",
+      "source": "engineering/grill-with-docs"
+    },
+    {
+      "name": "implement",
+      "source": "engineering/implement"
+    },
+    {
+      "name": "implement-spec",
+      "source": "engineering/implement-spec"
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "source": "engineering/improve-codebase-architecture"
+    },
+    {
+      "name": "pr",
+      "source": "engineering/pr"
+    },
+    {
+      "name": "prototype",
+      "source": "engineering/prototype"
+    },
+    {
+      "name": "research",
+      "source": "engineering/research"
+    },
+    {
+      "name": "retro",
+      "source": "engineering/retro"
+    },
+    {
+      "name": "setup-matt-pocock-skills",
+      "source": "engineering/setup-matt-pocock-skills"
+    },
+    {
+      "name": "tdd",
+      "source": "engineering/tdd"
+    },
+    {
+      "name": "to-spec",
+      "source": "engineering/to-spec"
+    },
+    {
+      "name": "to-tickets",
+      "source": "engineering/to-tickets"
+    },
+    {
+      "name": "triage",
+      "source": "engineering/triage"
+    },
+    {
+      "name": "wayfinder",
+      "source": "engineering/wayfinder"
+    },
+    {
+      "name": "wizard",
+      "source": "engineering/wizard"
+    }
+  ]
+}
