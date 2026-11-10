@@ -4,4 +4,4 @@ A preset may list hooks (an id, an event, an optional matcher, a command and a n
 
 ## Consequences
 
-Hooks reload from `settings.json` without a restart, so a hook-only change prints "already active". Preset definitions live in a public repository: adopt only hook commands you are happy to publish, since they may contain local paths. Hook ids are unique across all presets.
+Hooks reload from `settings.json` without a restart, so a hook-only change prints "already active". Preset definitions live in a public repository: adopt only hook commands you are happy to publish, since they may contain local paths. Hook ids are unique across all presets, and so is each combination of event, matcher and command. Only a hook that carries the tool's tag is ever removed, and a tagged hook whose definition is gone is removed by the next apply. A hook that already has its own `statusMessage` is never tagged, so it stays recognised by value but is never removed.

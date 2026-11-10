@@ -210,6 +210,92 @@ test('updating skills or plugins keeps the hooks of a preset', (t) => {
   assert.deepStrictEqual(def(f, 'tickets').hooks, [NUDGE]);
 });
 
+test('a hook dropped from its preset is removed from settings.json by the next apply', (t) => {
+  const f = setup(t);
+  h.run(f, ['add', 'tickets', '--yes']);
+  h.run(f, ['hook', 'drop', '--in', 'tickets', '--id', 'tickets-nudge', '--yes']);
+  const dry = h.run(f, ['apply']);
+  assert.match(dry.out, /hook-\s+tickets-nudge/);
+  h.run(f, ['apply', '--yes']);
+  assert.deepStrictEqual(settings(f).hooks, OLD_HOOKS);
+});
+
+test('removing a managed hook never deletes unmanaged entries of the same event', (t) => {
+  const f = setup(t, { ...OLD_HOOKS, Stop: [{ hooks: [] }] });
+  h.writePreset(f, 'tickets', ['tickets-tree'], [], [{ id: 'stop-note', event: 'Stop', command: 'echo stop' }]);
+  h.run(f, ['add', 'tickets', '--yes']);
+  assert.strictEqual(settings(f).hooks.Stop.length, 2);
+  h.run(f, ['remove', 'tickets', '--yes']);
+  assert.deepStrictEqual(settings(f).hooks.Stop, [{ hooks: [] }]);
+  assert.deepStrictEqual(settings(f).hooks.PreToolUse, OLD_HOOKS.PreToolUse);
+});
+
+test('only the tagged one of two identical commands in a group is removed', (t) => {
+  const f = setup(t, {
+    ...OLD_HOOKS,
+    PostToolUse: [
+      {
+        matcher: 'Bash',
+        hooks: [
+          { type: 'command', command: 'node tt.js nudge' },
+          { type: 'command', command: 'node tt.js nudge', statusMessage: tag },
+        ],
+      },
+    ],
+  });
+  const dry = h.run(f, ['apply']);
+  assert.match(dry.out, /hook-\s+tickets-nudge/);
+  h.run(f, ['apply', '--yes']);
+  assert.deepStrictEqual(settings(f).hooks.PostToolUse, [
+    { matcher: 'Bash', hooks: [{ type: 'command', command: 'node tt.js nudge' }] },
+  ]);
+});
+
+test('a hook that already has its own statusMessage is never retagged or removed', (t) => {
+  const own = { matcher: 'Bash', hooks: [{ type: 'command', command: 'node tt.js nudge', statusMessage: 'mine' }] };
+  const f = setup(t, { ...OLD_HOOKS, PostToolUse: [own] });
+  const dry = h.run(f, ['add', 'tickets']);
+  assert.doesNotMatch(dry.out, /hook[+~]/);
+  h.run(f, ['add', 'tickets', '--yes']);
+  h.run(f, ['remove', 'tickets', '--yes']);
+  assert.deepStrictEqual(settings(f).hooks.PostToolUse, [own]);
+  assert.match(h.run(f, ['hooks']).out, /preset tickets: tickets-nudge \(untagged\)/);
+});
+
+test('an event name that is not a plain PascalCase word is refused, a typo is warned about', (t) => {
+  const f = setup(t);
+  const bad = h.run(f, ['hook', 'define', '--in', 'plain', '--id', 'k', '--event', 'constructor', '--command', 'echo', '--yes']);
+  assert.notStrictEqual(bad.code, 0);
+  const typo = h.run(f, ['hook', 'define', '--in', 'plain', '--id', 'k', '--event', 'PostToolUSe', '--command', 'echo', '--yes']);
+  assert.strictEqual(typo.code, 0, typo.err);
+  assert.match(typo.out, /not a known hook event/i);
+});
+
+test('the same event, matcher and command under two ids is refused', (t) => {
+  const f = setup(t);
+  h.writePreset(f, 'other', ['plain-x'], [], [{ ...NUDGE, id: 'second-id' }]);
+  const r = h.run(f, ['status']);
+  assert.notStrictEqual(r.code, 0);
+  assert.match(r.err, /second-id.*tickets-nudge|tickets-nudge.*second-id/);
+});
+
+test('the dry run shows the whole command and warns about local paths and secrets', (t) => {
+  const f = setup(t);
+  const long = `python C:/Users/someone/hooks/run.py ${'x'.repeat(200)}`;
+  const dry = h.run(f, ['hook', 'define', '--in', 'plain', '--id', 'p', '--event', 'PostToolUse', '--command', long]);
+  assert.ok(dry.out.includes(long), 'the full command is shown');
+  assert.match(dry.out, /local path.*public repository/i);
+  const secret = h.run(f, ['hook', 'define', '--in', 'plain', '--id', 'q', '--event', 'PostToolUse', '--command', 'curl -H "Authorization: token abc"']);
+  assert.match(secret.out, /secret/i);
+  const clean = h.run(f, ['hook', 'define', '--in', 'plain', '--id', 'r', '--event', 'PostToolUse', '--command', 'echo hi']);
+  assert.doesNotMatch(clean.out, /warning/i);
+});
+
+test('an empty matcher is shown as no matcher', (t) => {
+  const f = setup(t, { UserPromptSubmit: [{ matcher: '', hooks: [{ type: 'command', command: 'echo a' }] }] });
+  assert.match(h.run(f, ['hooks']).out, /1\. UserPromptSubmit\s+\(no matcher\)\s+unmanaged/);
+});
+
 test('list --details shows each preset hooks', (t) => {
   const f = setup(t);
   assert.match(h.run(f, ['list', '--details']).out, /tickets: tickets-tree \| hooks: tickets-nudge/);

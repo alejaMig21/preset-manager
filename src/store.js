@@ -9,7 +9,7 @@ class UserError extends Error {}
 const NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const PLUGIN = /^[A-Za-z0-9][\w.-]*@[A-Za-z0-9][\w.-]*$/; // "name@marketplace", as in enabledPlugins
 const stamp = () => new Date().toISOString().replace(/[:.]/g, '-');
-const EVENT = /^[A-Za-z]+$/; // a hook event such as PostToolUse
+const EVENT = /^[A-Z][A-Za-z]+$/; // a hook event such as PostToolUse (PascalCase, so never an Object.prototype name)
 const definitionText = (name, description, skills, plugins = [], hooks = []) =>
   `${JSON.stringify(
     { name, description, skills, ...(plugins.length ? { plugins } : {}), ...(hooks.length ? { hooks } : {}) },
@@ -101,10 +101,15 @@ function loadPresets(p) {
     };
   }
   const owner = {};
+  const shape = {};
   for (const x of Object.values(out)) {
     for (const hk of x.hooks) {
       if (owner[hk.id]) throw new UserError(`${p.presets}: hook id "${hk.id}" is used by both "${owner[hk.id]}" and "${x.name}"`);
       owner[hk.id] = x.name;
+      // The same event, matcher and command under two ids would be re-tagged back and forth by every apply.
+      const key = [hk.event, hk.matcher ?? '', hk.command].join('\u0000');
+      if (shape[key]) throw new UserError(`${p.presets}: hook "${hk.id}" repeats the event, matcher and command of hook "${shape[key]}"`);
+      shape[key] = hk.id;
     }
   }
   if (!out.default) throw new UserError(`${p.presets}: the "default" preset is missing`);
