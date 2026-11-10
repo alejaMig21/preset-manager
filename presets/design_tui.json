@@ -1,0 +1,26 @@
+{
+  "name": "design_tui",
+  "description": "Design preset: tui skills.",
+  "skills": [
+    {
+      "name": "tui-design-skill",
+      "source": "design/tui-design-skill"
+    },
+    {
+      "name": "textual-tui-skill",
+      "source": "design/textual-tui-skill"
+    },
+    {
+      "name": "interface-design-dammyjay",
+      "source": "design/interface-design-dammyjay"
+    },
+    {
+      "name": "interaction-design",
+      "source": "design/interaction-design"
+    },
+    {
+      "name": "color-expert",
+      "source": "design/color-expert"
+    }
+  ]
+}

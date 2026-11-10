@@ -1,0 +1,62 @@
+{
+  "name": "design_slides_content",
+  "description": "Design preset: slides content skills.",
+  "skills": [
+    {
+      "name": "frontend-slides",
+      "source": "design/frontend-slides"
+    },
+    {
+      "name": "cc-slidev",
+      "source": "design/cc-slidev"
+    },
+    {
+      "name": "slidev-skill",
+      "source": "design/slidev-skill"
+    },
+    {
+      "name": "marp-slide-quality",
+      "source": "design/marp-slide-quality"
+    },
+    {
+      "name": "marp-slides",
+      "source": "design/marp-slides"
+    },
+    {
+      "name": "revealjs-skill",
+      "source": "design/revealjs-skill"
+    },
+    {
+      "name": "guizang-ppt",
+      "source": "design/guizang-ppt"
+    },
+    {
+      "name": "nanobanan-ppt",
+      "source": "design/nanobanan-ppt"
+    },
+    {
+      "name": "email-html-mjml",
+      "source": "design/email-html-mjml"
+    },
+    {
+      "name": "markdown-viewer-skills",
+      "source": "design/markdown-viewer-skills"
+    },
+    {
+      "name": "humanize-text",
+      "source": "design/humanize-text"
+    },
+    {
+      "name": "copywriting-skill",
+      "source": "design/copywriting-skill"
+    },
+    {
+      "name": "content-strategy",
+      "source": "design/content-strategy"
+    },
+    {
+      "name": "content-catalogue",
+      "source": "design/content-catalogue"
+    }
+  ]
+}

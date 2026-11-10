@@ -1,0 +1,46 @@
+{
+  "name": "design_product",
+  "description": "Design preset: product skills.",
+  "skills": [
+    {
+      "name": "pm-skills",
+      "source": "design/pm-skills"
+    },
+    {
+      "name": "phuryn-pm-skills",
+      "source": "design/phuryn-pm-skills"
+    },
+    {
+      "name": "deanpeters-pm-skills",
+      "source": "design/deanpeters-pm-skills"
+    },
+    {
+      "name": "claude-pm-skills",
+      "source": "design/claude-pm-skills"
+    },
+    {
+      "name": "digidai-pm",
+      "source": "design/digidai-pm"
+    },
+    {
+      "name": "lenny-skills",
+      "source": "design/lenny-skills"
+    },
+    {
+      "name": "product-position",
+      "source": "design/product-position"
+    },
+    {
+      "name": "assimovt-productskills",
+      "source": "design/assimovt-productskills"
+    },
+    {
+      "name": "chadboyda-gtm",
+      "source": "design/chadboyda-gtm"
+    },
+    {
+      "name": "coreyhaines-marketing",
+      "source": "design/coreyhaines-marketing"
+    }
+  ]
+}

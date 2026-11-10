@@ -1,0 +1,10 @@
+{
+  "name": "prototyping",
+  "description": "Prototyping skills, split out of the old core preset.",
+  "skills": [
+    {
+      "name": "mockup-to-prototype",
+      "source": "top"
+    }
+  ]
+}

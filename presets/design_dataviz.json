@@ -1,0 +1,22 @@
+{
+  "name": "design_dataviz",
+  "description": "Design preset: dataviz skills.",
+  "skills": [
+    {
+      "name": "d3js-skill",
+      "source": "design/d3js-skill"
+    },
+    {
+      "name": "antvis-chart-skills",
+      "source": "design/antvis-chart-skills"
+    },
+    {
+      "name": "data-viz-agent",
+      "source": "design/data-viz-agent"
+    },
+    {
+      "name": "data-analysis-skill",
+      "source": "design/data-analysis-skill"
+    }
+  ]
+}

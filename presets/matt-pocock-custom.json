@@ -1,0 +1,10 @@
+{
+  "name": "matt-pocock-custom",
+  "description": "Custom skills built on top of the Matt Pocock engineering skills. Additive: lists only its own skills.",
+  "skills": [
+    {
+      "name": "tickets-tree",
+      "source": "matt-pocock-custom/tickets-tree"
+    }
+  ]
+}

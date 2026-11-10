@@ -1,0 +1,42 @@
+{
+  "name": "design_system",
+  "description": "Design preset: system skills.",
+  "skills": [
+    {
+      "name": "design-tokens-skill",
+      "source": "design/design-tokens-skill"
+    },
+    {
+      "name": "extract-design-system",
+      "source": "design/extract-design-system"
+    },
+    {
+      "name": "extract-design-md",
+      "source": "design/extract-design-md"
+    },
+    {
+      "name": "brand-design-md",
+      "source": "design/brand-design-md"
+    },
+    {
+      "name": "design-system-governance",
+      "source": "design/design-system-governance"
+    },
+    {
+      "name": "work-with-design-systems",
+      "source": "design/work-with-design-systems"
+    },
+    {
+      "name": "styleseed",
+      "source": "design/styleseed"
+    },
+    {
+      "name": "color-expert",
+      "source": "design/color-expert"
+    },
+    {
+      "name": "google-fonts-skill",
+      "source": "design/google-fonts-skill"
+    }
+  ]
+}

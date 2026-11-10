@@ -1,0 +1,26 @@
+{
+  "name": "design_accessibility",
+  "description": "Design preset: accessibility skills.",
+  "skills": [
+    {
+      "name": "accessibility-agents",
+      "source": "design/accessibility-agents"
+    },
+    {
+      "name": "accessibility-catalogue",
+      "source": "design/accessibility-catalogue"
+    },
+    {
+      "name": "fixing-accessibility",
+      "source": "design/fixing-accessibility"
+    },
+    {
+      "name": "wcag-ai-skill",
+      "source": "design/wcag-ai-skill"
+    },
+    {
+      "name": "wcag-audit-patterns",
+      "source": "design/wcag-audit-patterns"
+    }
+  ]
+}

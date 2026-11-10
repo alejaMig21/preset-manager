@@ -1,0 +1,66 @@
+{
+  "name": "design_3d_creative",
+  "description": "Design preset: 3d creative skills.",
+  "skills": [
+    {
+      "name": "cloudai-threejs",
+      "source": "design/cloudai-threejs"
+    },
+    {
+      "name": "threejs-claude-skill-package",
+      "source": "design/threejs-claude-skill-package"
+    },
+    {
+      "name": "threejs-ecs-ts",
+      "source": "design/threejs-ecs-ts"
+    },
+    {
+      "name": "webgpu-claude-skill",
+      "source": "design/webgpu-claude-skill"
+    },
+    {
+      "name": "shader-dev",
+      "source": "design/shader-dev"
+    },
+    {
+      "name": "p5js-hermes",
+      "source": "design/p5js-hermes"
+    },
+    {
+      "name": "algorithmic-art",
+      "source": "design/algorithmic-art"
+    },
+    {
+      "name": "generative-media-skills",
+      "source": "design/generative-media-skills"
+    },
+    {
+      "name": "fal-ai-skills",
+      "source": "design/fal-ai-skills"
+    },
+    {
+      "name": "ai-graphic-design-skill",
+      "source": "design/ai-graphic-design-skill"
+    },
+    {
+      "name": "logo-designer-skill",
+      "source": "design/logo-designer-skill"
+    },
+    {
+      "name": "creative-director",
+      "source": "design/creative-director"
+    },
+    {
+      "name": "hand-drawn-diagrams",
+      "source": "design/hand-drawn-diagrams"
+    },
+    {
+      "name": "excalidraw-agents365",
+      "source": "design/excalidraw-agents365"
+    },
+    {
+      "name": "excalidraw-diagram",
+      "source": "design/excalidraw-diagram"
+    }
+  ]
+}
