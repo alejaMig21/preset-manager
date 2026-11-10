@@ -76,8 +76,11 @@ function update(p, args, v) {
   const dropPlugins = list(v['remove-plugins']);
   const notListed = dropPlugins.filter((id) => !preset.plugins.includes(id));
   if (notListed.length) throw fail(`preset "${name}" does not list the plugin: ${notListed.join(', ')}`);
+  const addPlugins = checkPlugins(p, list(v['add-plugins']));
+  const both = addPlugins.filter((id) => dropPlugins.includes(id));
+  if (both.length) throw fail(`the plugin is in both --add-plugins and --remove-plugins: ${both.join(', ')}`);
   const keptPlugins = preset.plugins.filter((id) => !dropPlugins.includes(id));
-  const nextPlugins = [...keptPlugins, ...checkPlugins(p, list(v['add-plugins'])).filter((id) => !keptPlugins.includes(id))];
+  const nextPlugins = [...keptPlugins, ...addPlugins.filter((id) => !keptPlugins.includes(id))];
   if (!v.yes) return `Would update preset "${name}" to ${describe(next, nextPlugins)}\nRe-run with --yes to write it.`;
   write(p, name, preset.description, next, nextPlugins);
   const active = store.loadActive(p).some((a) => a.name === name);

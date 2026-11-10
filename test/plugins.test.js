@@ -103,6 +103,32 @@ test('a preset asking for a plugin that is not installed is refused naming it', 
   assert.deepStrictEqual(h.readSettings(f).enabledPlugins, { [ENGRAM]: false, [UNITY]: false, [HUD]: false });
 });
 
+test('a plugin that only lingers in enabledPlugins but is not installed is refused', (t) => {
+  const f = setup(t, { [ENGRAM]: false, [UNITY]: false, [HUD]: false, 'removed@market': false });
+  h.writePreset(f, 'old', ['old-x'], ['removed@market']);
+  const r = h.run(f, ['add', 'old', '--yes']);
+  assert.notStrictEqual(r.code, 0);
+  assert.match(r.err, /removed@market/);
+  assert.strictEqual(plugins(f)['removed@market'], false);
+});
+
+test('an unreadable installed_plugins.json is reported by name, not as a crash', (t) => {
+  const f = setup(t);
+  fs.writeFileSync(path.join(f.root, 'plugins', 'installed_plugins.json'), '{ nope');
+  const r = h.run(f, ['status']);
+  assert.notStrictEqual(r.code, 0);
+  assert.match(r.err, /installed_plugins\.json/);
+  assert.doesNotMatch(r.err, /SyntaxError|at Object/);
+});
+
+test('with no installed_plugins.json the plugins in settings are trusted', (t) => {
+  const f = setup(t);
+  fs.rmSync(path.join(f.root, 'plugins'), { recursive: true });
+  const r = h.run(f, ['add', 'gamedev']);
+  assert.strictEqual(r.code, 0, r.err);
+  assert.match(r.out, /plugin\+\s+unity@unity-agent-plugin/);
+});
+
 test('a malformed plugin id in a definition is refused naming the file', (t) => {
   const f = setup(t);
   h.writePreset(f, 'sloppy', ['x'], ['no-marketplace']);

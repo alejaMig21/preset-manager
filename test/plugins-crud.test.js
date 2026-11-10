@@ -73,6 +73,14 @@ test('update refuses to remove a plugin the preset does not list, and an unknown
   assert.match(unknown.err, /ghost@nowhere/);
 });
 
+test('adding and removing the same plugin in one update is refused', (t) => {
+  const f = setup(t);
+  h.run(f, ['update', 'engineering', '--add-plugins', UNITY, '--yes']); // now listed, so removal alone would be valid
+  const r = h.run(f, ['update', 'engineering', '--add-plugins', UNITY, '--remove-plugins', UNITY, '--yes']);
+  assert.notStrictEqual(r.code, 0);
+  assert.match(r.err, /both.*unity@unity-agent-plugin/i);
+});
+
 test('update without --yes changes nothing', (t) => {
   const f = setup(t);
   const before = fs.readFileSync(path.join(f.presets, 'engineering.json'), 'utf8');

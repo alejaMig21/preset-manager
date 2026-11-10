@@ -4,4 +4,4 @@ Each preset may list plugins it turns on, and plugins stack like skills: `defaul
 
 ## Consequences
 
-Claude Code loads plugins at session start, so every plugin change prints the restart notice; skills-only changes stay live. Rollback restores plugin switches because they live in `settings.json`, which every backup already holds.
+Claude Code loads plugins at session start, so every plugin change prints the restart notice; skills-only changes stay live. Rollback restores plugin switches because they live in `settings.json`, which every backup already holds. A plugin counts as installed when `plugins/installed_plugins.json` lists it; with no such file the tool trusts the plugins named in `enabledPlugins`. A preset that asks for a plugin that is not installed is refused, so a typo or a removed plugin cannot be switched on by name.
