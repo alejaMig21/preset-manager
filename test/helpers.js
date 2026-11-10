@@ -20,10 +20,11 @@ function fake() {
   return f;
 }
 
-function run(f, args, input) {
+function run(f, args, { input, env } = {}) {
   const r = spawnSync(process.execPath, [BIN, ...args, '--root', f.root, '--presets', f.presets], {
     encoding: 'utf8',
     input,
+    env: { ...process.env, ...env },
   });
   return { code: r.status, out: r.stdout, err: r.stderr };
 }
