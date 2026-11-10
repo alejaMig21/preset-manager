@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { UserError, readJsonFile, stamp } = require('./store');
 const claudemd = require('./claudemd');
+const hookset = require('./hookset');
 
 // Files the tool may change besides links; each is backed up before every write.
 const BACKED_UP = [
@@ -132,7 +133,8 @@ function applyChange(p, { actions, nextEntries, settings, desired }) {
     applyBlocks(p, actions, desired);
     const switches = actions.filter((a) => a.kind === 'on' || a.kind === 'off');
     const plugins = actions.filter((a) => a.kind === 'plugin+' || a.kind === 'plugin-');
-    if (switches.length || plugins.length) {
+    const hookActs = actions.filter((a) => a.kind.startsWith('hook'));
+    if (switches.length || plugins.length || hookActs.length) {
       const next = { ...settings };
       if (switches.length) {
         const overrides = { ...(settings.skillOverrides || {}) };
@@ -145,6 +147,7 @@ function applyChange(p, { actions, nextEntries, settings, desired }) {
       if (plugins.length) {
         next.enabledPlugins = { ...(settings.enabledPlugins || {}), ...Object.fromEntries(plugins.map((a) => [a.name, a.kind === 'plugin+'])) };
       }
+      if (hookActs.length) next.hooks = hookset.apply(settings, hookActs);
       writeAtomic(p.settings, `${JSON.stringify(next, null, 2)}\n`);
     }
     writeAtomic(p.activeFile, `${JSON.stringify({ active: nextEntries }, null, 2)}\n`);

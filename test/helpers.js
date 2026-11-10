@@ -29,10 +29,11 @@ function run(f, args, { input, env } = {}) {
   return { code: r.status, out: r.stdout, err: r.stderr };
 }
 
-function writePreset(f, name, skills, plugins = []) {
+function writePreset(f, name, skills, plugins = [], hooks = []) {
   const list = skills.map((s) => (typeof s === 'string' ? { name: s, source: 'top' } : s));
   const body = { name, description: `${name} preset`, skills: list };
   if (plugins.length) body.plugins = plugins;
+  if (hooks.length) body.hooks = hooks;
   fs.writeFileSync(path.join(f.presets, `${name}.json`), JSON.stringify(body, null, 2));
 }
 

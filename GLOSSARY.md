@@ -30,6 +30,12 @@ _Avoid_: Known skill, universe
 **Managed plugin**:
 A plugin named in at least one preset. Only managed plugins are switched on or off by the tool; every other plugin, such as one enabled by hand, is left alone.
 
+**Managed hook**:
+A hook named in a preset definition and found in `settings.json` by its event, matcher and command. It carries an owner tag; every other hook is unmanaged and is left alone.
+
+**Owner tag**:
+The text `[preset <name>: <id>]` that the tool writes into a managed hook's `statusMessage`, so the owner can be read in `settings.json`.
+
 **Unassigned skill**:
 An installed skill that no preset names.
 _Avoid_: Orphan, loose skill

@@ -124,3 +124,19 @@ Stories:
 61. As the owner, I want a preset that holds only plugins, so that `usage` can carry `claude-hud` by itself.
 
 Decisions: a definition gains an optional `plugins` list; plugin actions are `plugin+` and `plugin-` in the plan; managed plugins are those named by any preset; an unknown or uninstalled plugin is refused, both when writing a definition and when planning. Tests keep the single seam (the real CLI against a fake root).
+
+## Addendum: hooks in presets (ADR 0007)
+
+Stories:
+
+62. As the owner, I want a preset to list hooks with an id, an event, a matcher, a command and a note, so that a project's hook lives next to its skill.
+63. As the owner, I want activating a preset to add its hooks and deactivating it to remove them, so that a hook runs only when it is needed.
+64. As the owner, I want hooks no preset names to be left alone, so that my other hooks are never touched.
+65. As the owner, I want each managed hook to carry a visible owner tag in `settings.json`, so that I can tell whose it is by opening the file.
+66. As the owner, I want `preset hooks` to list every hook with its owner or "unmanaged", and the hooks defined but not installed, so that a cleanup starts from facts.
+67. As the owner, I want to adopt an existing hook into a preset without retyping it, so that hooks I already have get an owner.
+68. As the owner, I want to define a hook for a preset from scratch and to drop one, so that I can manage hooks from the command line.
+69. As the owner, I want a hook change to need no restart, so that it applies at once.
+70. As the owner, I want `rollback` to restore the hooks too, so that undoing a change is complete.
+
+Decisions: a definition gains an optional `hooks` list; hook actions are `hook+`, `hook-` and `hook~` (an existing identical hook receives its owner tag); a managed hook is found by event, matcher and command; ids are unique across presets; `status` reports the unmanaged hooks.

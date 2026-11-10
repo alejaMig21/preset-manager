@@ -4,6 +4,7 @@ const path = require('node:path');
 const store = require('./store');
 const skills = require('./skills');
 const apply = require('./apply');
+const hookset = require('./hookset');
 
 const BIN = path.resolve(__dirname, '..', 'bin', 'preset.js');
 const COMMAND = `"${process.execPath}" "${BIN}" hook nudge`;
@@ -42,10 +43,14 @@ function nudge(p) {
   }
 }
 
-function run(p, sub, yes) {
-  if (sub === 'install') return install(p, yes);
+function run(p, args, v) {
+  const [sub, ...rest] = args;
+  if (sub === 'install') return install(p, v.yes);
   if (sub === 'nudge') return nudge(p);
-  throw new store.UserError('usage: preset hook install|nudge');
+  if (sub === 'define') return hookset.define(p, v);
+  if (sub === 'adopt') return hookset.adopt(p, rest, v);
+  if (sub === 'drop') return hookset.drop(p, v);
+  throw new store.UserError('usage: preset hook install|nudge|define|adopt|drop');
 }
 
 module.exports = { run };
