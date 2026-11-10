@@ -4,10 +4,10 @@
 
 **Blocked by:** 05, 06
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The skill maps each of the four request types to the right command
-- [ ] It states the proposal-first rule for "group them yourself" requests
-- [ ] It states that every write is a dry run first and needs confirmation
-- [ ] It tells the agent to relay the restart notice
-- [ ] It points to the glossary terms instead of redefining them
+- [x] The skill maps each of the four request types to the right command
+- [x] It states the proposal-first rule for "group them yourself" requests
+- [x] It states that every write is a dry run first and needs confirmation
+- [x] It tells the agent to relay the restart notice
+- [x] It points to the glossary terms instead of redefining them
