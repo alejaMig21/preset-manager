@@ -5,11 +5,13 @@ const apply = require('./apply');
 const skills = require('./skills');
 const crud = require('./crud');
 const hook = require('./hook');
+const convert = require('./convert');
 const { change, reconcile } = require('./reconcile');
 
 const OPTIONS = {
   root: { type: 'string' },
   presets: { type: 'string' },
+  from: { type: 'string' },
   yes: { type: 'boolean' },
   skills: { type: 'string' },
   add: { type: 'string' },
@@ -49,6 +51,8 @@ const COMMANDS = {
   rollback: (p, args, v) => apply.rollback(p, v.yes),
 
   hook: (p, args, v) => hook.run(p, args[0], v.yes),
+
+  convert: (p, args, v) => convert.convert(p, v.yes),
 
   create: (p, args, v) => crud.create(p, args, v),
   update: (p, args, v) => crud.update(p, args, v),

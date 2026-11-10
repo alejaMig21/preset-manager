@@ -4,12 +4,12 @@
 
 **Blocked by:** 04, 05
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] A fake copy of the old format converts into valid new-format presets that `status` reads
-- [ ] `core` and `engineering_productivity` no longer exist afterwards; `default` and `prototyping` do
-- [ ] `default` lists exactly the four base skills
-- [ ] The two new fragments together keep every rule of the old fragment, and each preset carries its own
-- [ ] A backup of the old files exists before anything is written
-- [ ] Running convert a second time refuses and says it already ran
-- [ ] The dry run changes nothing
+- [x] A fake copy of the old format converts into valid new-format presets that `status` reads
+- [x] `core` and `engineering_productivity` no longer exist afterwards; `default` and `prototyping` do
+- [x] `default` lists exactly the four base skills
+- [x] The two new fragments together keep every rule of the old fragment, and each preset carries its own
+- [x] A backup of the old files exists before anything is written
+- [x] Running convert a second time refuses and says it already ran
+- [x] The dry run changes nothing

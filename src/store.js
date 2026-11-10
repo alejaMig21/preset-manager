@@ -14,6 +14,7 @@ function paths(opts) {
     presets,
     fragments: path.join(presets, 'fragments'),
     state,
+    from: path.resolve(opts.from || path.join(root, 'presets')), // the old format, read by convert
     activeFile: path.join(state, 'active.json'),
     stateFragments: path.join(state, 'fragments'),
     // ^ copies of the repo fragments that CLAUDE.md imports (imports are relative to the global file)
