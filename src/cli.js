@@ -51,15 +51,20 @@ function change(p, kind, name, yes) {
 
 function reconcile(p, presets, active, next, label, yes) {
   const settings = store.loadSettings(p);
-  const actions = plan.skillActions(p, presets, next, settings);
+  const actions = [...plan.skillActions(p, presets, next, settings), ...plan.blockActions(p, presets, next)];
   const activeChanged = next.join() !== active.map((a) => a.name).join();
   if (!actions.length && !activeChanged) return 'Nothing to change.';
-  const body = actions.length ? plan.format(actions) : '  (no skill changes)';
+  const bytes = plan.fragmentBytes(p, presets, next);
+  const body = [
+    actions.length ? plan.format(actions) : '  (no changes besides the active list)',
+    bytes ? `Stacked fragment text: ${bytes} bytes (about ${Math.ceil(bytes / 4)} tokens).` : '',
+  ].filter(Boolean).join('\n');
   if (!yes) return `Plan to ${label} (dry run, nothing written):\n${body}\nRe-run with --yes to apply.`;
   const since = Object.fromEntries(active.map((a) => [a.name, a.since]));
   const nextEntries = next.map((name) => ({ name, since: since[name] || today() }));
-  apply.applyChange(p, { actions, nextEntries, settings });
-  return `Done: ${label}.\n${body}`;
+  apply.applyChange(p, { actions, nextEntries, settings, desired: plan.desiredBlocks(presets, next) });
+  const restart = actions.some((a) => a.kind.startsWith('block') || a.kind === 'text');
+  return `Done: ${label}.\n${body}\n${apply.restartNotice(restart)}`;
 }
 
 function main(argv) {

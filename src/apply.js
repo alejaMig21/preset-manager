@@ -2,6 +2,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { UserError, readJsonFile } = require('./store');
+const claudemd = require('./claudemd');
 
 // Files the tool may change besides links; each is backed up before every write.
 const BACKED_UP = [
@@ -51,7 +52,14 @@ function makeBackup(p, actions) {
     dir = path.join(p.backups, stamp);
     for (let i = 1; fs.existsSync(dir); i++) dir = path.join(p.backups, `${stamp}-${i}`);
     fs.mkdirSync(dir);
-    const manifest = { files: {}, created: [], removed: [] };
+    const manifest = { files: {}, created: [], removed: [], fragments: [] };
+    if (fs.existsSync(p.stateFragments)) {
+      fs.mkdirSync(path.join(dir, 'fragments'));
+      for (const n of fs.readdirSync(p.stateFragments)) {
+        fs.copyFileSync(path.join(p.stateFragments, n), path.join(dir, 'fragments', n));
+        manifest.fragments.push(n);
+      }
+    }
     for (const [name, key] of BACKED_UP) {
       manifest.files[name] = fs.existsSync(p[key]);
       if (manifest.files[name]) fs.copyFileSync(p[key], path.join(dir, name));
@@ -78,15 +86,43 @@ function restore(p, dir) {
     if (manifest.files[name]) writeAtomic(p[key], fs.readFileSync(path.join(dir, name)));
     else fs.rmSync(p[key], { force: true });
   }
+  const keep = new Set(manifest.fragments || []);
+  if (fs.existsSync(p.stateFragments)) {
+    for (const n of fs.readdirSync(p.stateFragments)) {
+      if (!keep.has(n)) fs.rmSync(path.join(p.stateFragments, n), { force: true });
+    }
+  }
+  for (const n of keep) writeAtomic(path.join(p.stateFragments, n), fs.readFileSync(path.join(dir, 'fragments', n)));
 }
 
-function applyChange(p, { actions, nextEntries, settings }) {
+// Everything a session reads at start: CLAUDE.md plus the fragment copies it imports.
+function signature(p) {
+  const read = (f) => (fs.existsSync(f) ? fs.readFileSync(f, 'utf8') : '');
+  const copies = fs.existsSync(p.stateFragments) ? fs.readdirSync(p.stateFragments).sort() : [];
+  return [read(p.claudeMd), ...copies.map((n) => `${n}\0${read(path.join(p.stateFragments, n))}`)].join('\u0001');
+}
+
+function applyBlocks(p, actions, desired) {
+  for (const a of actions.filter((x) => x.kind === 'block+' || x.kind === 'text')) {
+    writeAtomic(path.join(p.stateFragments, `${a.name}.md`), fs.readFileSync(path.join(p.fragments, `${a.name}.md`)));
+  }
+  for (const a of actions.filter((x) => x.kind === 'block-')) {
+    fs.rmSync(path.join(p.stateFragments, `${a.name}.md`), { force: true });
+  }
+  if (!actions.some((x) => x.kind.startsWith('block'))) return;
+  const old = fs.existsSync(p.claudeMd) ? fs.readFileSync(p.claudeMd, 'utf8') : '';
+  const next = claudemd.update(old, desired, p.claudeMd);
+  if (next !== old) writeAtomic(p.claudeMd, next);
+}
+
+function applyChange(p, { actions, nextEntries, settings, desired }) {
   const backup = makeBackup(p, actions);
   try {
     for (const a of actions) {
       if (a.kind === 'unlink') removeLink(p, a.name);
       if (a.kind === 'link') createLink(p, a.name, a.target);
     }
+    applyBlocks(p, actions, desired);
     const switches = actions.filter((a) => a.kind === 'on' || a.kind === 'off');
     if (switches.length) {
       const overrides = { ...(settings.skillOverrides || {}) };
@@ -124,9 +160,15 @@ function rollback(p, yes) {
     `  recreates links: ${manifest.removed.map((r) => r.name).join(', ') || '(none)'}`,
   ];
   if (!yes) return [`Rollback plan (dry run, nothing written):`, ...lines, 'Re-run with --yes to apply.'].join('\n');
+  const before = signature(p);
   restore(p, dir);
   fs.renameSync(dir, `${dir}.rolled-back`);
-  return ['Rolled back.', ...lines].join('\n');
+  return ['Rolled back.', ...lines, restartNotice(signature(p) !== before)].join('\n');
 }
 
-module.exports = { applyChange, rollback };
+const restartNotice = (needed) =>
+  needed
+    ? 'Restart the session so Claude reads the updated CLAUDE.md text.'
+    : 'Already active: no restart needed.';
+
+module.exports = { applyChange, rollback, restartNotice };

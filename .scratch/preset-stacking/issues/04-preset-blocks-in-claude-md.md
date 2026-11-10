@@ -4,12 +4,12 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Adding a preset with a fragment adds exactly one block; removing it removes exactly that block
-- [ ] Blocks appear in activation order
-- [ ] Text outside the blocks is byte-identical after any apply
-- [ ] A damaged or unpaired marker makes the command refuse, exit non-zero and name the marker
-- [ ] A change in a block prints "restart the session"; a skills-only change prints "already active"
-- [ ] The total fragment size is printed when a preset is added
-- [ ] A preset without a fragment adds no block
+- [x] Adding a preset with a fragment adds exactly one block; removing it removes exactly that block
+- [x] Blocks appear in activation order
+- [x] Text outside the blocks is byte-identical after any apply
+- [x] A damaged or unpaired marker makes the command refuse, exit non-zero and name the marker
+- [x] A change in a block prints "restart the session"; a skills-only change prints "already active"
+- [x] The total fragment size is printed when a preset is added
+- [x] A preset without a fragment adds no block

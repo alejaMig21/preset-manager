@@ -2,6 +2,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { UserError } = require('./store');
+const claudemd = require('./claudemd');
 
 function targetOf(p, source) {
   if (source === 'top') return null; // a real folder already in <root>/skills
@@ -68,10 +69,46 @@ function skillActions(p, presets, activeNames, settings) {
   return actions;
 }
 
+// Names whose fragment is imported: default first, then the active presets, only those with a fragment.
+function desiredBlocks(presets, activeNames) {
+  return [...new Set(['default', ...activeNames])].filter((n) => presets[n].hasFragment);
+}
+
+function sameFile(a, b) {
+  try {
+    return fs.readFileSync(a).equals(fs.readFileSync(b));
+  } catch {
+    return false;
+  }
+}
+
+// CLAUDE.md actions: block- (remove), block+ (add or rewrite), text (fragment copy is out of date).
+function blockActions(p, presets, activeNames) {
+  const desired = desiredBlocks(presets, activeNames);
+  const text = fs.existsSync(p.claudeMd) ? fs.readFileSync(p.claudeMd, 'utf8') : '';
+  const { add, remove } = claudemd.diff(text, desired, p.claudeMd);
+  const actions = [
+    ...remove.map((name) => ({ kind: 'block-', name })),
+    ...add.map((name) => ({ kind: 'block+', name })),
+  ];
+  for (const name of desired) {
+    const stale = !sameFile(path.join(p.fragments, `${name}.md`), path.join(p.stateFragments, `${name}.md`));
+    if (!add.includes(name) && stale) actions.push({ kind: 'text', name });
+  }
+  return actions;
+}
+
+function fragmentBytes(p, presets, activeNames) {
+  return desiredBlocks(presets, activeNames).reduce(
+    (sum, name) => sum + fs.statSync(path.join(p.fragments, `${name}.md`)).size,
+    0,
+  );
+}
+
 function format(actions) {
   return actions
     .map((a) => `  ${a.kind.padEnd(7)} ${a.name}${a.target ? ` -> ${a.target}` : ''}`)
     .join('\n');
 }
 
-module.exports = { skillActions, format };
+module.exports = { skillActions, blockActions, desiredBlocks, fragmentBytes, format };

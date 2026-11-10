@@ -16,6 +16,7 @@ function paths(opts) {
     state,
     activeFile: path.join(state, 'active.json'),
     stateFragments: path.join(state, 'fragments'),
+    // ^ copies of the repo fragments that CLAUDE.md imports (imports are relative to the global file)
     backups: path.join(state, 'backups'),
     settings: path.join(root, 'settings.json'),
     claudeMd: path.join(root, 'CLAUDE.md'),
