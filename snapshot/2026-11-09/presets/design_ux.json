@@ -1,0 +1,166 @@
+{
+  "name": "design_ux",
+  "description": "Design preset: ux skills.",
+  "status": "defined",
+  "base": true,
+  "skills_on": [
+    {
+      "name": "find-skills",
+      "source": "top"
+    },
+    {
+      "name": "preset-manager",
+      "source": "top"
+    },
+    {
+      "name": "ux-designer-skill",
+      "source": "design/ux-designer-skill"
+    },
+    {
+      "name": "ux-ui-mastery",
+      "source": "design/ux-ui-mastery"
+    },
+    {
+      "name": "interaction-design",
+      "source": "design/interaction-design"
+    },
+    {
+      "name": "information-architecture-and-navigation",
+      "source": "design/information-architecture-and-navigation"
+    },
+    {
+      "name": "search-ux",
+      "source": "design/search-ux"
+    },
+    {
+      "name": "software-ux-research",
+      "source": "design/software-ux-research"
+    },
+    {
+      "name": "user-research-cookiy",
+      "source": "design/user-research-cookiy"
+    },
+    {
+      "name": "neo-user-journey",
+      "source": "design/neo-user-journey"
+    },
+    {
+      "name": "service-blueprint",
+      "source": "design/service-blueprint"
+    },
+    {
+      "name": "ux-writing-skill",
+      "source": "design/ux-writing-skill"
+    },
+    {
+      "name": "localization-design",
+      "source": "design/localization-design"
+    },
+    {
+      "name": "dark-pattern-audit",
+      "source": "design/dark-pattern-audit"
+    },
+    {
+      "name": "design-for-ai",
+      "source": "design/design-for-ai"
+    },
+    {
+      "name": "wireframe-skill",
+      "source": "design/wireframe-skill"
+    },
+    {
+      "name": "wireframer",
+      "source": "design/wireframer"
+    },
+    {
+      "name": "claude-wireframe-skill",
+      "source": "design/claude-wireframe-skill"
+    },
+    {
+      "name": "skill-creator",
+      "source": "top"
+    },
+    {
+      "name": "dev-journal",
+      "source": "top"
+    }
+  ],
+  "skills_off": [
+    "ask-matt",
+    "blender-addon-zip",
+    "branch-pr",
+    "chained-pr",
+    "code-review",
+    "codebase-design",
+    "cognitive-doc-design",
+    "comment-writer",
+    "diagnosing-bugs",
+    "domain-modeling",
+    "error-recovery",
+    "git-per-file-commit",
+    "go-testing",
+    "grill-me",
+    "grill-with-docs",
+    "grilling",
+    "handoff",
+    "hostinger-astro-static",
+    "implement",
+    "implement-spec",
+    "improve-codebase-architecture",
+    "issue-creation",
+    "judgment-day",
+    "pr",
+    "prototype",
+    "py-spy-diagnose",
+    "research",
+    "retro",
+    "sdd-apply",
+    "sdd-archive",
+    "sdd-design",
+    "sdd-explore",
+    "sdd-init",
+    "sdd-onboard",
+    "sdd-propose",
+    "sdd-spec",
+    "sdd-tasks",
+    "sdd-verify",
+    "setup-matt-pocock-skills",
+    "skill-improver",
+    "skill-registry",
+    "tdd",
+    "teach",
+    "to-questionnaire",
+    "to-spec",
+    "to-tickets",
+    "triage",
+    "unity-best-practices",
+    "wait-what",
+    "wayfinder",
+    "wizard",
+    "work-unit-commits",
+    "writing-for-agents",
+    "mockup-to-prototype"
+  ],
+  "plugin_skills_base": [
+    "engram",
+    "ponytail",
+    "caveman"
+  ],
+  "plugins_on": [
+    "engram@engram",
+    "ponytail@ponytail",
+    "caveman@caveman",
+    "pyright-lsp@claude-plugins-official"
+  ],
+  "plugins_off": [
+    "claude-hud@claude-hud",
+    "frontend-design@claude-plugins-official"
+  ],
+  "fragments": [
+    "fragments/base.md"
+  ],
+  "notes": [
+    "skills_off lists only top-level and engineering/productivity skills; the ~140 design folders are not linked, so already inactive. skills_off is computed against the universe of top-level skills plus engineering/productivity group skills (names not in skills_on or base).",
+    "claude-hud is off in every preset (cosmetic statusline)."
+  ]
+}

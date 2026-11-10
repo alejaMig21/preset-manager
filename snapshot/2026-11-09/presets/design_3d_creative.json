@@ -1,0 +1,162 @@
+{
+  "name": "design_3d_creative",
+  "description": "Design preset: 3d creative skills.",
+  "status": "defined",
+  "base": true,
+  "skills_on": [
+    {
+      "name": "find-skills",
+      "source": "top"
+    },
+    {
+      "name": "preset-manager",
+      "source": "top"
+    },
+    {
+      "name": "cloudai-threejs",
+      "source": "design/cloudai-threejs"
+    },
+    {
+      "name": "threejs-claude-skill-package",
+      "source": "design/threejs-claude-skill-package"
+    },
+    {
+      "name": "threejs-ecs-ts",
+      "source": "design/threejs-ecs-ts"
+    },
+    {
+      "name": "webgpu-claude-skill",
+      "source": "design/webgpu-claude-skill"
+    },
+    {
+      "name": "shader-dev",
+      "source": "design/shader-dev"
+    },
+    {
+      "name": "p5js-hermes",
+      "source": "design/p5js-hermes"
+    },
+    {
+      "name": "algorithmic-art",
+      "source": "design/algorithmic-art"
+    },
+    {
+      "name": "generative-media-skills",
+      "source": "design/generative-media-skills"
+    },
+    {
+      "name": "fal-ai-skills",
+      "source": "design/fal-ai-skills"
+    },
+    {
+      "name": "ai-graphic-design-skill",
+      "source": "design/ai-graphic-design-skill"
+    },
+    {
+      "name": "logo-designer-skill",
+      "source": "design/logo-designer-skill"
+    },
+    {
+      "name": "creative-director",
+      "source": "design/creative-director"
+    },
+    {
+      "name": "hand-drawn-diagrams",
+      "source": "design/hand-drawn-diagrams"
+    },
+    {
+      "name": "excalidraw-agents365",
+      "source": "design/excalidraw-agents365"
+    },
+    {
+      "name": "excalidraw-diagram",
+      "source": "design/excalidraw-diagram"
+    },
+    {
+      "name": "skill-creator",
+      "source": "top"
+    },
+    {
+      "name": "dev-journal",
+      "source": "top"
+    }
+  ],
+  "skills_off": [
+    "ask-matt",
+    "blender-addon-zip",
+    "branch-pr",
+    "chained-pr",
+    "code-review",
+    "codebase-design",
+    "cognitive-doc-design",
+    "comment-writer",
+    "diagnosing-bugs",
+    "domain-modeling",
+    "error-recovery",
+    "git-per-file-commit",
+    "go-testing",
+    "grill-me",
+    "grill-with-docs",
+    "grilling",
+    "handoff",
+    "hostinger-astro-static",
+    "implement",
+    "implement-spec",
+    "improve-codebase-architecture",
+    "issue-creation",
+    "judgment-day",
+    "pr",
+    "prototype",
+    "py-spy-diagnose",
+    "research",
+    "retro",
+    "sdd-apply",
+    "sdd-archive",
+    "sdd-design",
+    "sdd-explore",
+    "sdd-init",
+    "sdd-onboard",
+    "sdd-propose",
+    "sdd-spec",
+    "sdd-tasks",
+    "sdd-verify",
+    "setup-matt-pocock-skills",
+    "skill-improver",
+    "skill-registry",
+    "tdd",
+    "teach",
+    "to-questionnaire",
+    "to-spec",
+    "to-tickets",
+    "triage",
+    "unity-best-practices",
+    "wait-what",
+    "wayfinder",
+    "wizard",
+    "work-unit-commits",
+    "writing-for-agents",
+    "mockup-to-prototype"
+  ],
+  "plugin_skills_base": [
+    "engram",
+    "ponytail",
+    "caveman"
+  ],
+  "plugins_on": [
+    "engram@engram",
+    "ponytail@ponytail",
+    "caveman@caveman",
+    "pyright-lsp@claude-plugins-official"
+  ],
+  "plugins_off": [
+    "claude-hud@claude-hud",
+    "frontend-design@claude-plugins-official"
+  ],
+  "fragments": [
+    "fragments/base.md"
+  ],
+  "notes": [
+    "skills_off lists only top-level and engineering/productivity skills; the ~140 design folders are not linked, so already inactive. skills_off is computed against the universe of top-level skills plus engineering/productivity group skills (names not in skills_on or base).",
+    "claude-hud is off in every preset (cosmetic statusline)."
+  ]
+}

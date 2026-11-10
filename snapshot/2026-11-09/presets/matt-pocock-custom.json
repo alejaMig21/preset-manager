@@ -1,0 +1,23 @@
+{
+  "name": "matt-pocock-custom",
+  "description": "Custom skills built on top of the Matt Pocock engineering skills. Additive: lists only its own skills.",
+  "status": "defined",
+  "base": true,
+  "additive": true,
+  "skills_on": [
+    {
+      "name": "tickets-tree",
+      "source": "matt-pocock-custom/tickets-tree"
+    }
+  ],
+  "skills_off": [],
+  "plugin_skills_base": [],
+  "plugins_on": [],
+  "plugins_off": [],
+  "fragments": [],
+  "notes": [
+    "Created 2026-11-09, defined only: no junction in ~/.claude/skills, not applied, active.json untouched.",
+    "Additive preset (new field `additive`): it lists only its own skills and is meant to be stacked on default + other presets. The current preset-manager runbook activates one preset at a time and would turn every other skill off if it applied this file as is; do not apply it with that runbook until the N-presets rework exists.",
+    "The skill source of truth is D:/Projects/AI/dev-tickets-tree/skills/tickets-tree/SKILL.md; the copy in skills/matt-pocock-custom/tickets-tree must be refreshed when that file changes."
+  ]
+}

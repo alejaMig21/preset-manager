@@ -1,0 +1,142 @@
+{
+  "name": "design_review",
+  "description": "Design preset: review skills.",
+  "status": "defined",
+  "base": true,
+  "skills_on": [
+    {
+      "name": "find-skills",
+      "source": "top"
+    },
+    {
+      "name": "preset-manager",
+      "source": "top"
+    },
+    {
+      "name": "design-auditor",
+      "source": "design/design-auditor"
+    },
+    {
+      "name": "design-review-garrytan",
+      "source": "design/design-review-garrytan"
+    },
+    {
+      "name": "plan-design-review",
+      "source": "design/plan-design-review"
+    },
+    {
+      "name": "design-debt-audit",
+      "source": "design/design-debt-audit"
+    },
+    {
+      "name": "design-consultation",
+      "source": "design/design-consultation"
+    },
+    {
+      "name": "design-brief",
+      "source": "design/design-brief"
+    },
+    {
+      "name": "design-lab",
+      "source": "design/design-lab"
+    },
+    {
+      "name": "design-sprint",
+      "source": "design/design-sprint"
+    },
+    {
+      "name": "design-negotiation",
+      "source": "design/design-negotiation"
+    },
+    {
+      "name": "design-impact-reporting",
+      "source": "design/design-impact-reporting"
+    },
+    {
+      "name": "skill-creator",
+      "source": "top"
+    },
+    {
+      "name": "dev-journal",
+      "source": "top"
+    }
+  ],
+  "skills_off": [
+    "ask-matt",
+    "blender-addon-zip",
+    "branch-pr",
+    "chained-pr",
+    "code-review",
+    "codebase-design",
+    "cognitive-doc-design",
+    "comment-writer",
+    "diagnosing-bugs",
+    "domain-modeling",
+    "error-recovery",
+    "git-per-file-commit",
+    "go-testing",
+    "grill-me",
+    "grill-with-docs",
+    "grilling",
+    "handoff",
+    "hostinger-astro-static",
+    "implement",
+    "implement-spec",
+    "improve-codebase-architecture",
+    "issue-creation",
+    "judgment-day",
+    "pr",
+    "prototype",
+    "py-spy-diagnose",
+    "research",
+    "retro",
+    "sdd-apply",
+    "sdd-archive",
+    "sdd-design",
+    "sdd-explore",
+    "sdd-init",
+    "sdd-onboard",
+    "sdd-propose",
+    "sdd-spec",
+    "sdd-tasks",
+    "sdd-verify",
+    "setup-matt-pocock-skills",
+    "skill-improver",
+    "skill-registry",
+    "tdd",
+    "teach",
+    "to-questionnaire",
+    "to-spec",
+    "to-tickets",
+    "triage",
+    "unity-best-practices",
+    "wait-what",
+    "wayfinder",
+    "wizard",
+    "work-unit-commits",
+    "writing-for-agents",
+    "mockup-to-prototype"
+  ],
+  "plugin_skills_base": [
+    "engram",
+    "ponytail",
+    "caveman"
+  ],
+  "plugins_on": [
+    "engram@engram",
+    "ponytail@ponytail",
+    "caveman@caveman",
+    "pyright-lsp@claude-plugins-official"
+  ],
+  "plugins_off": [
+    "claude-hud@claude-hud",
+    "frontend-design@claude-plugins-official"
+  ],
+  "fragments": [
+    "fragments/base.md"
+  ],
+  "notes": [
+    "skills_off lists only top-level and engineering/productivity skills; the ~140 design folders are not linked, so already inactive. skills_off is computed against the universe of top-level skills plus engineering/productivity group skills (names not in skills_on or base).",
+    "claude-hud is off in every preset (cosmetic statusline)."
+  ]
+}

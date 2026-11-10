@@ -1,0 +1,158 @@
+{
+  "name": "design_motion",
+  "description": "Design preset: motion skills.",
+  "status": "defined",
+  "base": true,
+  "skills_on": [
+    {
+      "name": "find-skills",
+      "source": "top"
+    },
+    {
+      "name": "preset-manager",
+      "source": "top"
+    },
+    {
+      "name": "animate-skill",
+      "source": "design/animate-skill"
+    },
+    {
+      "name": "animate-css-skill",
+      "source": "design/animate-css-skill"
+    },
+    {
+      "name": "css-animation-skill",
+      "source": "design/css-animation-skill"
+    },
+    {
+      "name": "motion-catalogue",
+      "source": "design/motion-catalogue"
+    },
+    {
+      "name": "motion-design-skill",
+      "source": "design/motion-design-skill"
+    },
+    {
+      "name": "design-motion-principles",
+      "source": "design/design-motion-principles"
+    },
+    {
+      "name": "fixing-motion-performance",
+      "source": "design/fixing-motion-performance"
+    },
+    {
+      "name": "framer-motion-skills",
+      "source": "design/framer-motion-skills"
+    },
+    {
+      "name": "gsap-skills",
+      "source": "design/gsap-skills"
+    },
+    {
+      "name": "emilkowalski-skill",
+      "source": "design/emilkowalski-skill"
+    },
+    {
+      "name": "remotion",
+      "source": "design/remotion"
+    },
+    {
+      "name": "hyperframes",
+      "source": "design/hyperframes"
+    },
+    {
+      "name": "wiggle-claude-skill",
+      "source": "design/wiggle-claude-skill"
+    },
+    {
+      "name": "liquid-glass-skill",
+      "source": "design/liquid-glass-skill"
+    },
+    {
+      "name": "skill-creator",
+      "source": "top"
+    },
+    {
+      "name": "dev-journal",
+      "source": "top"
+    }
+  ],
+  "skills_off": [
+    "ask-matt",
+    "blender-addon-zip",
+    "branch-pr",
+    "chained-pr",
+    "code-review",
+    "codebase-design",
+    "cognitive-doc-design",
+    "comment-writer",
+    "diagnosing-bugs",
+    "domain-modeling",
+    "error-recovery",
+    "git-per-file-commit",
+    "go-testing",
+    "grill-me",
+    "grill-with-docs",
+    "grilling",
+    "handoff",
+    "hostinger-astro-static",
+    "implement",
+    "implement-spec",
+    "improve-codebase-architecture",
+    "issue-creation",
+    "judgment-day",
+    "pr",
+    "prototype",
+    "py-spy-diagnose",
+    "research",
+    "retro",
+    "sdd-apply",
+    "sdd-archive",
+    "sdd-design",
+    "sdd-explore",
+    "sdd-init",
+    "sdd-onboard",
+    "sdd-propose",
+    "sdd-spec",
+    "sdd-tasks",
+    "sdd-verify",
+    "setup-matt-pocock-skills",
+    "skill-improver",
+    "skill-registry",
+    "tdd",
+    "teach",
+    "to-questionnaire",
+    "to-spec",
+    "to-tickets",
+    "triage",
+    "unity-best-practices",
+    "wait-what",
+    "wayfinder",
+    "wizard",
+    "work-unit-commits",
+    "writing-for-agents",
+    "mockup-to-prototype"
+  ],
+  "plugin_skills_base": [
+    "engram",
+    "ponytail",
+    "caveman"
+  ],
+  "plugins_on": [
+    "engram@engram",
+    "ponytail@ponytail",
+    "caveman@caveman",
+    "pyright-lsp@claude-plugins-official"
+  ],
+  "plugins_off": [
+    "claude-hud@claude-hud",
+    "frontend-design@claude-plugins-official"
+  ],
+  "fragments": [
+    "fragments/base.md"
+  ],
+  "notes": [
+    "skills_off lists only top-level and engineering/productivity skills; the ~140 design folders are not linked, so already inactive. skills_off is computed against the universe of top-level skills plus engineering/productivity group skills (names not in skills_on or base).",
+    "claude-hud is off in every preset (cosmetic statusline)."
+  ]
+}
