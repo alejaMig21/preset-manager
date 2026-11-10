@@ -1,15 +1,67 @@
-# Glossary
+# Preset manager
 
-Seed terms from the 2026-11-09 session; the grill refines them.
+Stacks several named presets of Claude Code skills and text on one machine, so a person turns whole working styles on and off by name. Refined by the 2026-11-09 grill.
 
-- **Preset**: a named set of skills turned on, plugins turned on or off, and a text fragment appended to the global `CLAUDE.md`. Stored as `~/.claude/presets/<name>.json`.
-- **Active preset**: today exactly one, named in `~/.claude/presets/active.json`. Target: a list of several.
-- **Additive preset**: a preset that lists only what it adds and is meant to stack with others. Marked `"additive": true` (only `matt-pocock-custom` so far).
-- **Default**: the person's name for what every preset includes today (the base). Currently repeated inside each preset JSON and partly represented by `core.json`.
-- **Base**: the skills `find-skills`, `preset-manager`, `skill-creator`, `dev-journal` and the plugins `engram`, `ponytail`, `caveman`, `pyright-lsp` that every preset carries today.
-- **Skill group**: a folder `~/.claude/skills/<group>/` holding skills that Claude Code does not see until a junction exposes them (`engineering`, `productivity`, `design`, `matt-pocock-custom`).
-- **Junction**: a Windows folder link created with `mklink /J`; `~/.claude/skills/<name>` pointing at `skills/<group>/<folder>` turns that skill on.
-- **skills_off**: the list of skill names written to `settings.json` `skillOverrides` as `off`. Today stored in each preset; target: computed.
-- **Fragment**: a Markdown file `~/.claude/presets/fragments/<name>.md` with a preset's workflow text, imported into the global `CLAUDE.md` inside a `<!-- preset:NAME -->` block.
-- **Universe**: the set of skills the tool knows about, from which `skills_off` is computed. Its exact definition is an open grill question.
-- **Snapshot**: the read-only copy of the live setup kept in `snapshot/2026-11-09/`.
+## Language
+
+**Preset**:
+A named set of skills that are turned on plus one optional text fragment. Several presets can be active at once.
+_Avoid_: Profile, mode, bundle
+
+**Active preset**:
+A preset currently switched on. The machine keeps an ordered list of them, global to all projects.
+_Avoid_: Current preset, selected preset
+
+**Stacking**:
+Having several active presets at once; what each one turns on is simply joined.
+_Avoid_: Merging, layering
+
+**Default**:
+The preset that is always on and holds only the base skills.
+_Avoid_: Core, base preset
+
+**Base**:
+The skills `find-skills`, `preset-manager`, `skill-creator` and `dev-journal`; the content of `default`.
+
+**Managed skill**:
+A skill named in at least one preset. Only managed skills are switched on or off by the tool; every other skill is left alone.
+_Avoid_: Known skill, universe
+
+**Unassigned skill**:
+An installed skill that no preset names.
+_Avoid_: Orphan, loose skill
+
+**Skill group**:
+A folder of skills that Claude Code does not see until a link exposes one of them (`engineering`, `productivity`, `design`).
+
+**Junction**:
+A Windows folder link that makes a skill visible by pointing `~/.claude/skills/<name>` at its folder, inside or outside `~/.claude`.
+_Avoid_: Symlink, shortcut
+
+**Skill source**:
+The folder a skill really lives in, which a junction points at. A source outside `~/.claude`, such as `tickets-tree`, is used in place, never copied.
+
+**Fragment**:
+A Markdown file with the workflow rules of one preset, joined into the global `CLAUDE.md`.
+_Avoid_: Preset text, snippet
+
+**Preset block**:
+The marked section of the global `CLAUDE.md` that holds one active preset's fragment; each active preset has its own.
+
+**Preset definition**:
+The files that describe a preset (its skill list and fragment). They live in this repo and are applied onto `~/.claude`.
+
+**Apply**:
+Making the active presets real in `~/.claude`: junctions, skill switches and preset blocks.
+
+**Restart notice**:
+The single line printed after an apply saying whether the session must be restarted (only when a preset block changed).
+
+**Proposal**:
+A list of presets, each with its skills, that the agent shows and the person approves before anything is written.
+
+**Snapshot**:
+The read-only copy of the live setup kept in `snapshot/2026-11-09/`.
+
+**Retired preset**:
+A preset removed because stacking replaces it: `engineering_productivity` and `core`.
