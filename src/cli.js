@@ -16,6 +16,7 @@ const OPTIONS = {
   from: { type: 'string' },
   yes: { type: 'boolean' },
   details: { type: 'boolean' },
+  local: { type: 'boolean' },
   in: { type: 'string' },
   id: { type: 'string' },
   event: { type: 'string' },

@@ -139,4 +139,12 @@ Stories:
 69. As the owner, I want a hook change to need no restart, so that it applies at once.
 70. As the owner, I want `rollback` to restore the hooks too, so that undoing a change is complete.
 
+Local definitions (ADR 0008), stories 71-75:
+
+71. As the owner, I want definitions that hold personal data kept in a local folder that git never uploads, so that a push cannot publish my paths.
+72. As the owner, I want a local file to add skills, plugins or hooks to a public preset, so that a shared preset can carry my private parts.
+73. As the owner, I want a preset that exists only locally, so that private presets never reach the repository.
+74. As the owner, I want `--local` on `hook define`, `hook adopt` and `create`, and a warning that points at it when a command with a local path would go public.
+75. As the owner, I want `preset hooks` to mark which hooks are local, so that I know what stays private.
+
 Decisions: a definition gains an optional `hooks` list; hook actions are `hook+`, `hook-` and `hook~` (an existing identical hook receives its owner tag); a managed hook is found by event, matcher and command; ids are unique across presets; `status` reports the unmanaged hooks.

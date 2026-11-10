@@ -48,6 +48,8 @@ test('the skill states the dry-run rule, the proposal rule and the restart notic
   assert.match(t, /`preset hooks`/);
   assert.match(t, /preset hook adopt/);
   assert.match(t, /public repository/i);
+  assert.match(t, /--local/);
+  assert.match(t, /presets\.local/);
   // plugins belong to presets now
   assert.match(t, /--plugins/);
   assert.match(t, /--add-plugins/);

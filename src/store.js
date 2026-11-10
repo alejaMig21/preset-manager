@@ -37,6 +37,7 @@ function paths(opts) {
     root,
     presets,
     fragments: path.join(presets, 'fragments'),
+    local: path.join(path.dirname(presets), 'presets.local'), // personal definitions, git-ignored
     state,
     from: path.resolve(opts.from || path.join(root, 'presets')), // the old format, read by convert
     activeFile: path.join(state, 'active.json'),
@@ -81,23 +82,41 @@ function validatePreset(file, stem, data) {
   }
 }
 
-// Returns { <name>: { name, description, skills: [{name, source}], hasFragment } }.
-function loadPresets(p) {
-  if (!fs.existsSync(p.presets)) throw new UserError(`${p.presets}: preset definitions folder not found`);
+// The definitions of one folder, as { <name>: { description, skills, plugins, hooks } }.
+function readDir(dir) {
   const out = {};
-  for (const entry of fs.readdirSync(p.presets).sort()) {
+  for (const entry of fs.readdirSync(dir).sort()) {
     if (!entry.endsWith('.json')) continue;
-    const file = path.join(p.presets, entry);
+    const file = path.join(dir, entry);
     const stem = entry.slice(0, -5);
     const data = readJsonFile(file);
     validatePreset(file, stem, data);
-    out[stem] = {
-      name: stem,
-      description: data.description || '',
-      skills: data.skills,
-      plugins: data.plugins || [],
-      hooks: data.hooks || [],
-      hasFragment: fs.existsSync(path.join(p.fragments, `${stem}.md`)),
+    out[stem] = { description: data.description || '', skills: data.skills, plugins: data.plugins || [], hooks: data.hooks || [] };
+  }
+  return out;
+}
+
+// Returns { <name>: { name, description, skills, plugins, hooks, hasFragment, src } }. Public definitions come from
+// the repo, local ones from the git-ignored folder: a local file adds to the public preset of the same name, and
+// `src` keeps what each file holds on its own so a write never copies one into the other.
+function loadPresets(p) {
+  if (!fs.existsSync(p.presets)) throw new UserError(`${p.presets}: preset definitions folder not found`);
+  const pub = readDir(p.presets);
+  const loc = fs.existsSync(p.local) ? readDir(p.local) : {};
+  const out = {};
+  for (const name of [...new Set([...Object.keys(pub), ...Object.keys(loc)])].sort()) {
+    const a = pub[name];
+    const b = loc[name];
+    out[name] = {
+      name,
+      description: (a && a.description) || (b && b.description) || '',
+      skills: [...(a ? a.skills : []), ...(b ? b.skills : [])].filter(
+        (s, i, all) => all.findIndex((x) => x.name === s.name && x.source === s.source) === i,
+      ),
+      plugins: [...new Set([...(a ? a.plugins : []), ...(b ? b.plugins : [])])],
+      hooks: [...(a ? a.hooks : []), ...(b ? b.hooks.map((hk) => ({ ...hk, local: true })) : [])],
+      hasFragment: Boolean(a) && fs.existsSync(path.join(p.fragments, `${name}.md`)),
+      src: { public: a || null, local: b || null },
     };
   }
   const owner = {};

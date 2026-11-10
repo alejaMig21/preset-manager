@@ -97,7 +97,7 @@ function inventory(presets, settings) {
     const d = defs.find((x) => matches(e, x));
     const stale = TAG.test(e.statusMessage || '');
     const owner = d
-      ? `preset ${d.preset}: ${d.id}${e.statusMessage === tagOf(d.preset, d.id) ? '' : ' (untagged)'}`
+      ? `preset ${d.preset}: ${d.id}${d.local ? ' [local]' : ''}${e.statusMessage === tagOf(d.preset, d.id) ? '' : ' (untagged)'}`
       : stale ? `${e.statusMessage} (its definition is gone: the next apply removes it)` : 'unmanaged';
     return [`${e.n}. ${e.event.padEnd(16)} ${(e.matcher || '(no matcher)').padEnd(18)} ${owner}`, `   ${clip(e.command || '', 100)}`, d && d.note ? `   ${d.note}` : '']
       .filter(Boolean).join('\n');
@@ -112,8 +112,12 @@ function inventory(presets, settings) {
 
 // ---- editing the hooks of a preset definition (repo files only; settings.json is never written here) ----
 
-function writeHooks(p, preset, hooks) {
-  fs.writeFileSync(path.join(p.presets, `${preset.name}.json`), store.definitionText(preset.name, preset.description, preset.skills, preset.plugins, hooks));
+// Writes the hooks of ONE definition file (public or local) and keeps everything else that file already holds.
+function writeHooks(p, scope, preset, hooks) {
+  const base = preset.src[scope] || { description: '', skills: [], plugins: [] };
+  const dir = scope === 'local' ? p.local : p.presets;
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, `${preset.name}.json`), store.definitionText(preset.name, base.description, base.skills, base.plugins, hooks));
 }
 
 function target(p, v) {
@@ -123,9 +127,11 @@ function target(p, v) {
 }
 
 // Definitions are committed to a public repository, so say what would be published.
-function warnings(def) {
+function warnings(def, local) {
   const out = [];
-  if (/[A-Za-z]:[\\/]|\/(?:home|Users)\//.test(def.command)) out.push('the command contains a local path, and the definition goes to a public repository if you commit it');
+  if (!local && /[A-Za-z]:[\\/]|\/(?:home|Users)\//.test(def.command)) {
+    out.push('the command contains a local path, and the definition goes to a public repository if you commit it; pass --local to keep it in presets.local/ instead');
+  }
   if (/token|secret|passw(or)?d|api[_-]?key/i.test(def.command)) out.push('the command looks like it may contain a secret: do not publish it');
   if (!KNOWN_EVENTS.has(def.event)) out.push(`"${def.event}" is not a known hook event name: check the spelling or the hook never fires`);
   return out.map((w) => `warning: ${w}`);
@@ -137,12 +143,15 @@ function addHook(p, v, def, yes) {
   if (problem) throw new UserError(problem);
   const owner = Object.values(presets).find((x) => x.hooks.some((hk) => hk.id === def.id));
   if (owner) throw new UserError(`hook id "${def.id}" already exists in preset "${owner.name}"`);
-  const warn = warnings(def);
+  const scope = v.local ? 'local' : 'public';
+  if (scope === 'public' && !preset.src.public) throw new UserError(`preset "${preset.name}" exists only locally: pass --local`);
+  const warn = warnings(def, v.local);
+  const where = `preset "${preset.name}"${v.local ? ' (local file)' : ''}`;
   if (!yes) {
-    return [`Would add hook "${def.id}" (${def.event}${def.matcher ? ` ${def.matcher}` : ''}) to preset "${preset.name}". Full command:`, `  ${def.command}`, ...warn, 'Re-run with --yes to write it.'].join('\n');
+    return [`Would add hook "${def.id}" (${def.event}${def.matcher ? ` ${def.matcher}` : ''}) to ${where}. Full command:`, `  ${def.command}`, ...warn, 'Re-run with --yes to write it.'].join('\n');
   }
-  writeHooks(p, preset, [...preset.hooks, def]);
-  return [`Added hook "${def.id}" to preset "${preset.name}". Apply the preset to install it.`, ...warn].join('\n');
+  writeHooks(p, scope, preset, [...(preset.src[scope] ? preset.src[scope].hooks : []), def]);
+  return [`Added hook "${def.id}" to ${where}. Apply the preset to install it.`, ...warn].join('\n');
 }
 
 const clean = (o) => Object.fromEntries(Object.entries(o).filter(([, x]) => x !== undefined && x !== ''));
@@ -163,9 +172,10 @@ function adopt(p, args, v) {
 
 function drop(p, v) {
   const { preset } = target(p, v);
-  if (!preset.hooks.some((hk) => hk.id === v.id)) throw new UserError(`preset "${preset.name}" has no hook "${v.id || ''}"`);
-  if (!v.yes) return `Would drop hook "${v.id}" from preset "${preset.name}". The next apply removes it from settings.json.\nRe-run with --yes to write it.`;
-  writeHooks(p, preset, preset.hooks.filter((hk) => hk.id !== v.id));
+  const scope = ['public', 'local'].find((s) => preset.src[s] && preset.src[s].hooks.some((hk) => hk.id === v.id));
+  if (!scope) throw new UserError(`preset "${preset.name}" has no hook "${v.id || ''}"`);
+  if (!v.yes) return `Would drop hook "${v.id}" from preset "${preset.name}"${scope === 'local' ? ' (local file)' : ''}. The next apply removes it from settings.json.\nRe-run with --yes to write it.`;
+  writeHooks(p, scope, preset, preset.src[scope].hooks.filter((hk) => hk.id !== v.id));
   return `Dropped hook "${v.id}" from preset "${preset.name}". The next apply removes it from settings.json.`;
 }
 

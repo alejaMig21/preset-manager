@@ -40,8 +40,11 @@ function resolve(p, specs) {
   });
 }
 
-function write(p, name, description, skillList, plugins, hooks = []) {
-  fs.writeFileSync(path.join(p.presets, `${name}.json`), definitionText(name, description, skillList, plugins, hooks));
+// Writes one definition file: scope "public" is the repo's presets folder, "local" the git-ignored one.
+function write(p, scope, name, description, skillList, plugins, hooks = []) {
+  const dir = scope === 'local' ? p.local : p.presets;
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, `${name}.json`), definitionText(name, description, skillList, plugins, hooks));
 }
 
 function existing(p, name) {
@@ -53,36 +56,39 @@ function existing(p, name) {
 function create(p, args, v) {
   const name = args[0];
   if (!name || !NAME.test(name)) throw fail('usage: preset create <name> --skills a,b [--description "..."]');
-  if (fs.existsSync(path.join(p.presets, `${name}.json`))) throw fail(`preset "${name}" already exists`);
+  if (store.loadPresets(p)[name]) throw fail(`preset "${name}" already exists`);
   const picked = resolve(p, list(v.skills));
   const plugins = checkPlugins(p, list(v.plugins));
   if (!picked.length && !plugins.length) throw fail('a preset needs at least one skill or one plugin: pass --skills a,b or --plugins name@marketplace');
   if (!v.yes) return `Would create preset "${name}" with ${describe(picked, plugins)}\nRe-run with --yes to write it.`;
-  write(p, name, v.description || '', picked, plugins);
-  return `Created preset "${name}" with ${describe(picked, plugins)}`;
+  write(p, v.local ? 'local' : 'public', name, v.description || '', picked, plugins);
+  return `Created ${v.local ? 'local ' : ''}preset "${name}" with ${describe(picked, plugins)}`;
 }
 
 function update(p, args, v) {
   const name = args[0];
   if (!name) throw fail('usage: preset update <name> [--add a,b] [--remove c]');
   const { presets, preset } = existing(p, name);
+  // Edit the file that owns the preset (the public one, or the local one of a private preset), never the merge.
+  const scope = preset.src.public ? 'public' : 'local';
+  const base = preset.src[scope];
   const drop = list(v.remove);
-  const missing = drop.filter((n) => !preset.skills.some((s) => s.name === n));
+  const missing = drop.filter((n) => !base.skills.some((s) => s.name === n));
   if (missing.length) throw fail(`preset "${name}" does not contain: ${missing.join(', ')}`);
-  const kept = preset.skills.filter((s) => !drop.includes(s.name));
+  const kept = base.skills.filter((s) => !drop.includes(s.name));
   const added = resolve(p, list(v.add)).filter((s) => !kept.some((k) => k.name === s.name));
   const next = [...kept, ...added];
   const dropPlugins = list(v['remove-plugins']);
-  const notListed = dropPlugins.filter((id) => !preset.plugins.includes(id));
+  const notListed = dropPlugins.filter((id) => !base.plugins.includes(id));
   if (notListed.length) throw fail(`preset "${name}" does not list the plugin: ${notListed.join(', ')}`);
   const addPlugins = checkPlugins(p, list(v['add-plugins']));
   const both = addPlugins.filter((id) => dropPlugins.includes(id));
   if (both.length) throw fail(`the plugin is in both --add-plugins and --remove-plugins: ${both.join(', ')}`);
-  const keptPlugins = preset.plugins.filter((id) => !dropPlugins.includes(id));
+  const keptPlugins = base.plugins.filter((id) => !dropPlugins.includes(id));
   const nextPlugins = [...keptPlugins, ...addPlugins.filter((id) => !keptPlugins.includes(id))];
   if (!next.length && !nextPlugins.length) throw fail(`a preset needs at least one skill or one plugin; use "preset delete ${name}" instead`);
   if (!v.yes) return `Would update preset "${name}" to ${describe(next, nextPlugins)}\nRe-run with --yes to write it.`;
-  write(p, name, preset.description, next, nextPlugins, preset.hooks);
+  write(p, scope, name, base.description, next, nextPlugins, base.hooks);
   const active = store.loadActive(p).some((a) => a.name === name);
   const elsewhere = new Set(Object.values(presets).filter((x) => x.name !== name).flatMap((x) => x.skills.map((s) => s.name)));
   const unassigned = drop.filter((n) => !elsewhere.has(n) && !next.some((s) => s.name === n));
@@ -114,9 +120,13 @@ function remove(p, args, v) {
   if (isActive) lines.push(`Preset "${name}" was active and has been deactivated.`);
   const saved = path.join(p.backups, `${stamp()}-deleted-${name}`);
   fs.mkdirSync(saved, { recursive: true });
-  fs.copyFileSync(path.join(p.presets, `${name}.json`), path.join(saved, `${name}.json`));
+  const files = [
+    [path.join(p.presets, `${name}.json`), `${name}.json`],
+    [path.join(p.local, `${name}.json`), `${name}.local.json`],
+  ].filter(([file]) => fs.existsSync(file));
+  for (const [file, copy] of files) fs.copyFileSync(file, path.join(saved, copy));
   if (preset.hasFragment) fs.copyFileSync(path.join(p.fragments, `${name}.md`), path.join(saved, `${name}.md`));
-  fs.rmSync(path.join(p.presets, `${name}.json`));
+  for (const [file] of files) fs.rmSync(file);
   fs.rmSync(path.join(p.fragments, `${name}.md`), { force: true });
   lines.push(`Deleted preset "${name}".`);
   if (nowUnassigned.length) lines.push(`Now unassigned (left exactly as they are): ${names(nowUnassigned)}`);

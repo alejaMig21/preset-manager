@@ -12,6 +12,7 @@ function fake() {
     dir,
     root: path.join(dir, 'claude'),
     presets: path.join(dir, 'presets'),
+    local: path.join(dir, 'presets.local'), // created on demand, like the real git-ignored folder
     external: path.join(dir, 'external'),
   };
   fs.mkdirSync(path.join(f.root, 'skills'), { recursive: true });
@@ -35,6 +36,12 @@ function writePreset(f, name, skills, plugins = [], hooks = []) {
   if (plugins.length) body.plugins = plugins;
   if (hooks.length) body.hooks = hooks;
   fs.writeFileSync(path.join(f.presets, `${name}.json`), JSON.stringify(body, null, 2));
+}
+
+// A local (git-ignored) definition: adds to the public preset of the same name, or is a private preset.
+function writeLocal(f, name, body = {}) {
+  fs.mkdirSync(f.local, { recursive: true });
+  fs.writeFileSync(path.join(f.local, `${name}.json`), JSON.stringify({ name, description: '', skills: [], ...body }, null, 2));
 }
 
 // Plugins Claude Code knows about, as in <root>/plugins/installed_plugins.json.
@@ -116,6 +123,6 @@ function cleanup(f) {
 }
 
 module.exports = {
-  fake, run, writePreset, installPlugins, writeFragment, makeSkill, makeExternalSkill, linkSkill, isLink, writeActive,
+  fake, run, writePreset, writeLocal, installPlugins, writeFragment, makeSkill, makeExternalSkill, linkSkill, isLink, writeActive,
   readJson, readSettings, writeSettings, activeNames, cleanup,
 };

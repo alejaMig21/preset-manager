@@ -30,6 +30,9 @@ _Avoid_: Known skill, universe
 **Managed plugin**:
 A plugin named in at least one preset. Only managed plugins are switched on or off by the tool; every other plugin, such as one enabled by hand, is left alone.
 
+**Local definition**:
+A preset file in the git-ignored `presets.local/` folder. It adds to the public preset of the same name, or is a private preset when none exists.
+
 **Managed hook**:
 A hook named in a preset definition and found in `settings.json` by its event, matcher and command. It carries an owner tag; every other hook is unmanaged and is left alone.
 

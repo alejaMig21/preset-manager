@@ -26,7 +26,7 @@ CLI: `node D:\Projects\AI\preset-manager\bin\preset.js` (written `preset` below)
 
 A skill outside the config folder goes in as `--skills name=<absolute path>`. A plugin id is `name@marketplace`, as in `enabledPlugins`; the CLI refuses one that is not installed. Plugin changes load only when a session starts, so relay the restart notice.
 
-Hook commands write only the preset definition; the next apply installs or tags the hook in `settings.json`, and hook changes need no restart. Definitions live in a public repository: show the person the hook command and wait for a yes before `adopt` or `define`, because commands may contain local paths.
+Hook commands write only the preset definition; the next apply installs or tags the hook in `settings.json`, and hook changes need no restart. Definitions live in a public repository: show the person the hook command and wait for a yes before `adopt` or `define`, because commands may contain local paths. Anything personal (a local path, a private project, a secret) goes with `--local` into `presets.local/`, which git ignores; `create --local` makes a private preset the same way.
 
 To list presets, run `preset list` and show its output as printed: one name per line, `*` marks the active ones. Do not explain the star. `preset list --details` adds each preset's skills and plugins. Run `preset` with no command to list every command.
 
