@@ -25,9 +25,20 @@ How a switch works today (single active preset):
 
 `matt-pocock-custom` (created 2026-11-09, not applied): `presets/matt-pocock-custom.json` with the new field `"additive": true`, listing only `tickets-tree` (`source: matt-pocock-custom/tickets-tree`), plus the folder `~/.claude/skills/matt-pocock-custom/tickets-tree/SKILL.md`, a copy of `D:\Projects\AI\dev-tickets-tree\skills\tickets-tree\SKILL.md`. No junction exists. Applying it with the current runbook would turn every other skill off (the runbook computes `skills_off` from the single active preset).
 
+## Question style (the person complained that the first question did not land)
+
+The person does not remember project details between sessions and wants to be asked about their goal, not about implementation. Every question:
+
+1. Opens with the goal it serves, in plain words ("you want several presets on at once; this decides X").
+2. Uses an everyday example from their own setup (for instance: "today you say 'cambia a engineering_productivity'; with stacking you would say ...") before any technical choice.
+3. Defines every term it uses in a Glosario right under it, in one everyday sentence each (runbook, junction, additive, fragment, `skills_off`, Node, `node --test`, "thin skill layer"...). No term appears without its definition, and no reference to another repo ("like in dev-tickets-tree") without saying in one sentence what that was.
+4. Offers a recommendation plus at most one real alternative, and waits.
+
 ## Grill agenda (frontier: questions to settle before any spec; recommended answer first)
 
-Ask one at a time, each followed by a Glosario for the person (see `CLAUDE.md`).
+**Order override: ask 2, 4, 3, 5, 6, 7, 8 first (what stacking means and how it behaves), then 1, 9, 10, 11, 12 (how to build it).** Question 1 (tool or runbook) is an implementation choice and comes only after the behaviour is settled. The first question of the session is 2, framed as the person's daily use.
+
+Ask one at a time, each followed by a Glosario for the person (see `CLAUDE.md` and "Question style" above).
 
 1. **What is this repo?** Recommended: a Node tool (`preset` CLI, zero dependencies, `node --test`) plus a thin `preset-manager` skill that calls it, mirroring `D:\Projects\AI\dev-tickets-tree` (agent-facing skill, dumb tool, tests with a fake config dir). The data (`presets/*.json`) stays in `~/.claude`. Alternative: presets live in this repo and `apply` writes into `~/.claude`.
 2. **The model.** Recommended: every preset is additive (lists only what it turns on, plus its own plugins and fragment); `default` is a normal preset that is always on (or implicitly merged); `skills_off` is computed (known skills minus the union of active `skills_on`), never stored. What does "known skills" mean (top-level only, or groups too, given `design` has about 200 folders)?
