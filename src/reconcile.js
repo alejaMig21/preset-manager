@@ -1,6 +1,7 @@
 // add / remove / apply: compute the new active list, then bring the config root in line with it.
 const store = require('./store');
 const plan = require('./plan');
+const hookset = require('./hookset');
 const apply = require('./apply');
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -25,6 +26,7 @@ function reconcile(p, presets, active, next, label, yes) {
     ...plan.skillActions(p, presets, next, settings),
     ...plan.pluginActions(p, presets, next, settings),
     ...plan.blockActions(p, presets, next),
+    ...hookset.actions(presets, next, settings),
   ];
   const activeChanged = next.join() !== active.map((a) => a.name).join();
   if (!actions.length && !activeChanged) return 'Nothing to change.';

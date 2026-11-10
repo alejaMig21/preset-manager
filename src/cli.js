@@ -5,6 +5,7 @@ const apply = require('./apply');
 const skills = require('./skills');
 const crud = require('./crud');
 const hook = require('./hook');
+const hookset = require('./hookset');
 const convert = require('./convert');
 const suggest = require('./suggest');
 const { change, reconcile } = require('./reconcile');
@@ -15,6 +16,12 @@ const OPTIONS = {
   from: { type: 'string' },
   yes: { type: 'boolean' },
   details: { type: 'boolean' },
+  in: { type: 'string' },
+  id: { type: 'string' },
+  event: { type: 'string' },
+  matcher: { type: 'string' },
+  command: { type: 'string' },
+  note: { type: 'string' },
   skills: { type: 'string' },
   add: { type: 'string' },
   remove: { type: 'string' },
@@ -35,6 +42,7 @@ const COMMANDS = {
       `Unassigned skills: ${names.join(', ') || '(none)'}`,
       `Broken junctions: ${broken.map((b) => `${b.name} -> ${b.target}`).join(', ') || '(none)'}`,
       `Plugins without preset: ${plan.unmanagedPlugins(p, presets, store.loadSettings(p)).join(', ') || '(none)'}`,
+      `Unmanaged hooks: ${hookset.unmanagedCount(presets, store.loadSettings(p))}`,
     ].join('\n');
   },
 
@@ -58,7 +66,8 @@ const COMMANDS = {
 
   rollback: (p, args, v) => apply.rollback(p, v.yes),
 
-  hook: (p, args, v) => hook.run(p, args[0], v.yes),
+  hook: (p, args, v) => hook.run(p, args, v),
+  hooks: (p) => hookset.inventory(store.loadPresets(p), store.loadSettings(p)),
 
   convert: (p, args, v) => convert.convert(p, v.yes),
 

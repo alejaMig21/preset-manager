@@ -16,12 +16,17 @@ CLI: `node D:\Projects\AI\preset-manager\bin\preset.js` (written `preset` below)
 | create preset X with skills Y and Z (and plugins) | `preset create X --skills Y,Z --plugins p@m --description "..."` |
 | change what X contains | `preset update X --add a,b --remove c --add-plugins p@m --remove-plugins p@m` |
 | delete X | `preset delete X` |
+| which hooks exist and who owns them | `preset hooks` |
+| give an existing hook to a preset | `preset hook adopt <number> --in X --id name --note "why"` |
+| a new hook for a preset, or drop one | `preset hook define --in X --id name --event E --matcher M --command C`, `preset hook drop --in X --id name` |
 | which skills have no preset | `preset unassigned` |
 | where an unassigned skill belongs, or whether it is needed | `preset suggest [skill...]` |
 | make the active list real again | `preset apply` |
 | undo the last change | `preset rollback` |
 
 A skill outside the config folder goes in as `--skills name=<absolute path>`. A plugin id is `name@marketplace`, as in `enabledPlugins`; the CLI refuses one that is not installed. Plugin changes load only when a session starts, so relay the restart notice.
+
+Hook commands write only the preset definition; the next apply installs or tags the hook in `settings.json`, and hook changes need no restart. Definitions live in a public repository: show the person the hook command and wait for a yes before `adopt` or `define`, because commands may contain local paths.
 
 To list presets, run `preset list` and show its output as printed: one name per line, `*` marks the active ones. Do not explain the star. `preset list --details` adds each preset's skills and plugins. Run `preset` with no command to list every command.
 

@@ -40,8 +40,8 @@ function resolve(p, specs) {
   });
 }
 
-function write(p, name, description, skillList, plugins) {
-  fs.writeFileSync(path.join(p.presets, `${name}.json`), definitionText(name, description, skillList, plugins));
+function write(p, name, description, skillList, plugins, hooks = []) {
+  fs.writeFileSync(path.join(p.presets, `${name}.json`), definitionText(name, description, skillList, plugins, hooks));
 }
 
 function existing(p, name) {
@@ -82,7 +82,7 @@ function update(p, args, v) {
   const nextPlugins = [...keptPlugins, ...addPlugins.filter((id) => !keptPlugins.includes(id))];
   if (!next.length && !nextPlugins.length) throw fail(`a preset needs at least one skill or one plugin; use "preset delete ${name}" instead`);
   if (!v.yes) return `Would update preset "${name}" to ${describe(next, nextPlugins)}\nRe-run with --yes to write it.`;
-  write(p, name, preset.description, next, nextPlugins);
+  write(p, name, preset.description, next, nextPlugins, preset.hooks);
   const active = store.loadActive(p).some((a) => a.name === name);
   const elsewhere = new Set(Object.values(presets).filter((x) => x.name !== name).flatMap((x) => x.skills.map((s) => s.name)));
   const unassigned = drop.filter((n) => !elsewhere.has(n) && !next.some((s) => s.name === n));
@@ -133,7 +133,7 @@ function show(p, details) {
       .join('\n');
   }
   return Object.values(presets)
-    .map((x) => `${x.name}: ${names(x.skills) || '(no skills)'}${x.plugins.length ? ` | plugins: ${x.plugins.join(', ')}` : ''}${active.has(x.name) ? ' [active]' : ''}`)
+    .map((x) => `${x.name}: ${names(x.skills) || '(no skills)'}${x.plugins.length ? ` | plugins: ${x.plugins.join(', ')}` : ''}${x.hooks.length ? ` | hooks: ${x.hooks.map((hk) => hk.id).join(', ')}` : ''}${active.has(x.name) ? ' [active]' : ''}`)
     .join('\n');
 }
 

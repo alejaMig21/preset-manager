@@ -44,6 +44,10 @@ test('the skill states the dry-run rule, the proposal rule and the restart notic
   // the list is shown exactly as printed, without explaining the star
   assert.match(t, /`preset list`.*as printed|as printed.*`preset list`/is);
   assert.match(t, /Do not explain the star/);
+  // hooks belong to presets too, and definitions are public
+  assert.match(t, /`preset hooks`/);
+  assert.match(t, /preset hook adopt/);
+  assert.match(t, /public repository/i);
   // plugins belong to presets now
   assert.match(t, /--plugins/);
   assert.match(t, /--add-plugins/);

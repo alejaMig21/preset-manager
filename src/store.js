@@ -9,8 +9,25 @@ class UserError extends Error {}
 const NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const PLUGIN = /^[A-Za-z0-9][\w.-]*@[A-Za-z0-9][\w.-]*$/; // "name@marketplace", as in enabledPlugins
 const stamp = () => new Date().toISOString().replace(/[:.]/g, '-');
-const definitionText = (name, description, skills, plugins = []) =>
-  `${JSON.stringify({ name, description, skills, ...(plugins.length ? { plugins } : {}) }, null, 2)}\n`;
+const EVENT = /^[A-Z][A-Za-z]+$/; // a hook event such as PostToolUse (PascalCase, so never an Object.prototype name)
+const definitionText = (name, description, skills, plugins = [], hooks = []) =>
+  `${JSON.stringify(
+    { name, description, skills, ...(plugins.length ? { plugins } : {}), ...(hooks.length ? { hooks } : {}) },
+    null,
+    2,
+  )}\n`;
+
+// A hook definition needs an id, an event and a command; matcher and note are optional text.
+function checkHook(h) {
+  if (!h || typeof h !== 'object') return 'every hook must be an object';
+  if (typeof h.id !== 'string' || !NAME.test(h.id)) return `invalid hook id "${h && h.id}"`;
+  if (typeof h.event !== 'string' || !EVENT.test(h.event)) return `hook "${h.id}": invalid event "${h.event}"`;
+  if (typeof h.command !== 'string' || !h.command.trim()) return `hook "${h.id}": a non-empty "command" is required`;
+  for (const k of ['matcher', 'note']) {
+    if (h[k] !== undefined && typeof h[k] !== 'string') return `hook "${h.id}": "${k}" must be text`;
+  }
+  return '';
+}
 
 function paths(opts) {
   const root = path.resolve(opts.root || path.join(os.homedir(), '.claude'));
@@ -55,6 +72,13 @@ function validatePreset(file, stem, data) {
   if (data.plugins !== undefined && (!Array.isArray(data.plugins) || data.plugins.some((x) => typeof x !== 'string' || !PLUGIN.test(x)))) {
     throw bad('"plugins" must be a list of "name@marketplace" ids');
   }
+  if (data.hooks !== undefined) {
+    if (!Array.isArray(data.hooks)) throw bad('"hooks" must be a list');
+    for (const hk of data.hooks) {
+      const problem = checkHook(hk);
+      if (problem) throw bad(problem);
+    }
+  }
 }
 
 // Returns { <name>: { name, description, skills: [{name, source}], hasFragment } }.
@@ -72,8 +96,21 @@ function loadPresets(p) {
       description: data.description || '',
       skills: data.skills,
       plugins: data.plugins || [],
+      hooks: data.hooks || [],
       hasFragment: fs.existsSync(path.join(p.fragments, `${stem}.md`)),
     };
+  }
+  const owner = {};
+  const shape = {};
+  for (const x of Object.values(out)) {
+    for (const hk of x.hooks) {
+      if (owner[hk.id]) throw new UserError(`${p.presets}: hook id "${hk.id}" is used by both "${owner[hk.id]}" and "${x.name}"`);
+      owner[hk.id] = x.name;
+      // The same event, matcher and command under two ids would be re-tagged back and forth by every apply.
+      const key = [hk.event, hk.matcher ?? '', hk.command].join('\u0000');
+      if (shape[key]) throw new UserError(`${p.presets}: hook "${hk.id}" repeats the event, matcher and command of hook "${shape[key]}"`);
+      shape[key] = hk.id;
+    }
   }
   if (!out.default) throw new UserError(`${p.presets}: the "default" preset is missing`);
   return out;
@@ -95,4 +132,4 @@ function loadSettings(p) {
   return data;
 }
 
-module.exports = { UserError, NAME, PLUGIN, stamp, definitionText, paths, readJsonFile, loadPresets, loadActive, loadSettings };
+module.exports = { UserError, NAME, PLUGIN, EVENT, checkHook, stamp, definitionText, paths, readJsonFile, loadPresets, loadActive, loadSettings };
