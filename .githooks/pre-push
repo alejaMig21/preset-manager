@@ -1,0 +1,41 @@
+#!/bin/sh
+# Blocks any push that would publish what this project keeps private (docs/adr/0008).
+# Enable it once per clone: git config core.hooksPath .githooks
+# It cannot stop `git push --no-verify`; the project CLAUDE.md forbids that flag.
+
+OK_EMAIL='108048421+alejaMig21@users.noreply.github.com'
+PATTERN='jorge\.padron|ug\.uchile|mistake_detector|dev-tickets-tree|C:[/\\]+Users[/\\]+aleja|ghp_[A-Za-z0-9]{10}|gho_[A-Za-z0-9]{10}|github_pat_'
+ZERO=0000000000000000000000000000000000000000
+
+no() {
+  echo "pre-push blocked: $1" >&2
+  exit 1
+}
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  # Deleting a remote ref publishes nothing.
+  [ "$local_sha" = "$ZERO" ] && continue
+
+  [ "$remote_ref" = "refs/heads/main" ] || no "only main may be pushed, not $remote_ref"
+
+  if [ "$remote_sha" = "$ZERO" ]; then
+    range="$local_sha"
+  else
+    git cat-file -e "$remote_sha^{commit}" 2>/dev/null || no "the remote main is not in this clone: fetch first"
+    git merge-base --is-ancestor "$remote_sha" "$local_sha" || no "this push would rewrite main on the remote"
+    range="$remote_sha..$local_sha"
+  fi
+
+  bad=$(git log --format='%h %ae %ce' "$range" | awk -v ok="$OK_EMAIL" '$2 != ok || $3 != ok { print $1 }')
+  [ -z "$bad" ] || no "commits not signed with the GitHub noreply address: $bad"
+
+  if git log --name-only --format= "$range" | grep -q '^presets\.local/'; then
+    no "a commit contains presets.local/"
+  fi
+
+  # Added lines only, so history that is already public is never re-judged; this script and its test name the patterns.
+  hits=$(git log -p --format= "$range" -- . ':!.githooks' ':!test/prepush.test.js' | grep '^+' | grep -v '^+++' | grep -i -E "$PATTERN" | head -3)
+  [ -z "$hits" ] || no "added lines look personal or secret: $hits"
+done
+
+exit 0
