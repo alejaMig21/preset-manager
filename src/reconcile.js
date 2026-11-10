@@ -21,7 +21,11 @@ function change(p, kind, name, yes) {
 
 function reconcile(p, presets, active, next, label, yes) {
   const settings = store.loadSettings(p);
-  const actions = [...plan.skillActions(p, presets, next, settings), ...plan.blockActions(p, presets, next)];
+  const actions = [
+    ...plan.skillActions(p, presets, next, settings),
+    ...plan.pluginActions(p, presets, next, settings),
+    ...plan.blockActions(p, presets, next),
+  ];
   const activeChanged = next.join() !== active.map((a) => a.name).join();
   if (!actions.length && !activeChanged) return 'Nothing to change.';
   const bytes = plan.fragmentBytes(p, presets, next);
@@ -33,7 +37,7 @@ function reconcile(p, presets, active, next, label, yes) {
   const since = Object.fromEntries(active.map((a) => [a.name, a.since]));
   const nextEntries = next.map((name) => ({ name, since: since[name] || today() }));
   apply.applyChange(p, { actions, nextEntries, settings, desired: plan.desiredBlocks(presets, next) });
-  const restart = actions.some((a) => a.kind.startsWith('block') || a.kind === 'text');
+  const restart = actions.some((a) => /^(block|plugin)/.test(a.kind) || a.kind === 'text');
   return `Done: ${label}.\n${body}\n${apply.restartNotice(restart)}`;
 }
 

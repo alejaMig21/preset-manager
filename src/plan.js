@@ -1,7 +1,7 @@
 // Turning "which presets are active" into the actions needed on the skills folder and settings.
 const fs = require('node:fs');
 const path = require('node:path');
-const { UserError } = require('./store');
+const { UserError, readJsonFile } = require('./store');
 const claudemd = require('./claudemd');
 
 function targetOf(p, source) {
@@ -74,9 +74,11 @@ function desiredBlocks(presets, activeNames) {
   return [...new Set(['default', ...activeNames])].filter((n) => presets[n].hasFragment);
 }
 
+// Same text, ignoring line endings: git autocrlf rewrites the repo copy without changing what it says.
 function sameFile(a, b) {
   try {
-    return fs.readFileSync(a).equals(fs.readFileSync(b));
+    const text = (f) => fs.readFileSync(f, 'utf8').replace(/\r\n/g, '\n');
+    return text(a) === text(b);
   } catch {
     return false;
   }
@@ -105,10 +107,44 @@ function fragmentBytes(p, presets, activeNames) {
   );
 }
 
+// Plugins Claude Code has installed. With no install record the plugins named in settings are trusted.
+function knownPlugins(p, settings) {
+  const file = path.join(p.root, 'plugins', 'installed_plugins.json');
+  if (!fs.existsSync(file)) return new Set(Object.keys(settings.enabledPlugins || {}));
+  const data = readJsonFile(file);
+  return new Set(Object.keys(data.plugins || data));
+}
+
+const managedPlugins = (presets) => new Set(Object.values(presets).flatMap((x) => x.plugins));
+
+// Plugin actions: plugin+ (turn on), plugin- (turn off). Only managed plugins; the rest are left alone.
+function pluginActions(p, presets, activeNames, settings) {
+  const enabled = settings.enabledPlugins || {};
+  const managed = managedPlugins(presets);
+  const wanted = new Set(['default', ...activeNames].flatMap((n) => presets[n].plugins));
+  const known = knownPlugins(p, settings);
+  const actions = [];
+  for (const id of [...managed].sort()) {
+    if (wanted.has(id)) {
+      if (!known.has(id)) throw new UserError(`plugin "${id}" is not installed (a preset you are applying names it)`);
+      if (enabled[id] !== true) actions.push({ kind: 'plugin+', name: id });
+    } else if (enabled[id] === true) {
+      actions.push({ kind: 'plugin-', name: id });
+    }
+  }
+  return actions;
+}
+
+// Known plugins that no preset names.
+function unmanagedPlugins(p, presets, settings) {
+  const managed = managedPlugins(presets);
+  return [...knownPlugins(p, settings)].filter((id) => !managed.has(id)).sort();
+}
+
 function format(actions) {
   return actions
     .map((a) => `  ${a.kind.padEnd(7)} ${a.name}${a.target ? ` -> ${a.target}` : ''}`)
     .join('\n');
 }
 
-module.exports = { skillActions, blockActions, desiredBlocks, fragmentBytes, format };
+module.exports = { skillActions, blockActions, pluginActions, knownPlugins, unmanagedPlugins, desiredBlocks, fragmentBytes, format };

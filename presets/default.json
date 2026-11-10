@@ -18,5 +18,11 @@
       "name": "dev-journal",
       "source": "top"
     }
+  ],
+  "plugins": [
+    "engram@engram",
+    "ponytail@ponytail",
+    "caveman@caveman",
+    "pyright-lsp@claude-plugins-official"
   ]
 }

@@ -29,11 +29,20 @@ function run(f, args, { input, env } = {}) {
   return { code: r.status, out: r.stdout, err: r.stderr };
 }
 
-function writePreset(f, name, skills) {
+function writePreset(f, name, skills, plugins = []) {
   const list = skills.map((s) => (typeof s === 'string' ? { name: s, source: 'top' } : s));
+  const body = { name, description: `${name} preset`, skills: list };
+  if (plugins.length) body.plugins = plugins;
+  fs.writeFileSync(path.join(f.presets, `${name}.json`), JSON.stringify(body, null, 2));
+}
+
+// Plugins Claude Code knows about, as in <root>/plugins/installed_plugins.json.
+function installPlugins(f, ids) {
+  const dir = path.join(f.root, 'plugins');
+  fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(
-    path.join(f.presets, `${name}.json`),
-    JSON.stringify({ name, description: `${name} preset`, skills: list }, null, 2),
+    path.join(dir, 'installed_plugins.json'),
+    JSON.stringify({ version: 2, plugins: Object.fromEntries(ids.map((id) => [id, [{ scope: 'user' }]])) }),
   );
 }
 
@@ -106,6 +115,6 @@ function cleanup(f) {
 }
 
 module.exports = {
-  fake, run, writePreset, writeFragment, makeSkill, makeExternalSkill, linkSkill, isLink, writeActive,
+  fake, run, writePreset, installPlugins, writeFragment, makeSkill, makeExternalSkill, linkSkill, isLink, writeActive,
   readJson, readSettings, writeSettings, activeNames, cleanup,
 };

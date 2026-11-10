@@ -13,15 +13,15 @@ CLI: `node D:\Projects\AI\preset-manager\bin\preset.js` (written `preset` below)
 |---|---|
 | what is active, what exists | `preset status`, `preset list` |
 | add or remove preset X | `preset add X`, `preset remove X` |
-| create preset X with skills Y and Z | `preset create X --skills Y,Z --description "..."` |
-| change what X contains | `preset update X --add a,b --remove c` |
+| create preset X with skills Y and Z (and plugins) | `preset create X --skills Y,Z --plugins p@m --description "..."` |
+| change what X contains | `preset update X --add a,b --remove c --add-plugins p@m --remove-plugins p@m` |
 | delete X | `preset delete X` |
 | which skills have no preset | `preset unassigned` |
 | where an unassigned skill belongs, or whether it is needed | `preset suggest [skill...]` |
 | make the active list real again | `preset apply` |
 | undo the last change | `preset rollback` |
 
-A skill outside the config folder goes in as `--skills name=<absolute path>`. Run `preset` with no command to list every command.
+A skill outside the config folder goes in as `--skills name=<absolute path>`. A plugin id is `name@marketplace`, as in `enabledPlugins`; the CLI refuses one that is not installed. Plugin changes load only when a session starts, so relay the restart notice. Run `preset` with no command to list every command.
 
 ## Writing
 

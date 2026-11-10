@@ -18,6 +18,9 @@ const OPTIONS = {
   add: { type: 'string' },
   remove: { type: 'string' },
   description: { type: 'string' },
+  plugins: { type: 'string' },
+  'add-plugins': { type: 'string' },
+  'remove-plugins': { type: 'string' },
 };
 
 const COMMANDS = {
@@ -30,6 +33,7 @@ const COMMANDS = {
       `Known presets: ${Object.keys(presets).join(', ')}`,
       `Unassigned skills: ${names.join(', ') || '(none)'}`,
       `Broken junctions: ${broken.map((b) => `${b.name} -> ${b.target}`).join(', ') || '(none)'}`,
+      `Plugins without preset: ${plan.unmanagedPlugins(p, presets, store.loadSettings(p)).join(', ') || '(none)'}`,
     ].join('\n');
   },
 

@@ -10,5 +10,8 @@
       "name": "blender-addon-zip",
       "source": "top"
     }
+  ],
+  "plugins": [
+    "unity@unity-agent-plugin"
   ]
 }
