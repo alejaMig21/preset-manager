@@ -22,7 +22,7 @@ function readOld(dir) {
   return { presets, active: fs.existsSync(activeFile) ? readJsonFile(activeFile) : null };
 }
 
-function ownSkills(file, data, sources) {
+function ownSkills(file, data) {
   const seen = new Set();
   const out = [];
   for (const s of data.skills_on) {
@@ -82,12 +82,12 @@ function build(from) {
   };
   const skipped = [];
   if (old.core) {
-    const skills = ownSkills('core.json', old.core, sources);
+    const skills = ownSkills('core.json', old.core);
     if (skills.length) defs.prototyping = { description: 'Prototyping skills, split out of the old core preset.', skills };
   }
   for (const [name, data] of Object.entries(old)) {
     if (RETIRED.includes(name) || name === 'default' || name === 'prototyping') continue;
-    const skills = ownSkills(`${name}.json`, data, sources);
+    const skills = ownSkills(`${name}.json`, data);
     if (skills.length) defs[name] = { description: data.description || '', skills };
     else skipped.push(name);
   }
