@@ -4,10 +4,10 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] `orphans` lists installed skills that no preset names and omits managed ones
-- [ ] `status` shows the unassigned skills every time
-- [ ] `status` reports a junction whose source folder was removed, naming the junction
-- [ ] With no unassigned skills and no broken junctions the output says so
-- [ ] Neither command writes anything
+- [x] `orphans` lists installed skills that no preset names and omits managed ones
+- [x] `status` shows the unassigned skills every time
+- [x] `status` reports a junction whose source folder was removed, naming the junction
+- [x] With no unassigned skills and no broken junctions the output says so
+- [x] Neither command writes anything

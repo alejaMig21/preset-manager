@@ -2,24 +2,45 @@ const { parseArgs } = require('node:util');
 const store = require('./store');
 const plan = require('./plan');
 const apply = require('./apply');
+const skills = require('./skills');
+const crud = require('./crud');
+const { change, reconcile } = require('./reconcile');
 
 const OPTIONS = {
   root: { type: 'string' },
   presets: { type: 'string' },
   yes: { type: 'boolean' },
+  skills: { type: 'string' },
+  add: { type: 'string' },
+  remove: { type: 'string' },
+  description: { type: 'string' },
 };
 
-const today = () => new Date().toISOString().slice(0, 10);
+// Skills installed under the config root that no preset names.
+function unassigned(p, presets) {
+  const { installed, broken } = skills.scan(p);
+  const managed = new Set(Object.values(presets).flatMap((x) => x.skills.map((s) => s.name)));
+  return { names: [...installed.keys()].filter((n) => !managed.has(n)).sort(), broken };
+}
 
 const COMMANDS = {
   status(p) {
     const presets = store.loadPresets(p);
     const active = store.loadActive(p);
-    const names = Object.keys(presets);
+    const { names, broken } = unassigned(p, presets);
     return [
       `Active presets: ${active.length ? active.map((a) => `${a.name} (since ${a.since})`).join(', ') : '(none)'}`,
-      `Known presets: ${names.join(', ')}`,
+      `Known presets: ${Object.keys(presets).join(', ')}`,
+      `Unassigned skills: ${names.join(', ') || '(none)'}`,
+      `Broken junctions: ${broken.map((b) => `${b.name} -> ${b.target}`).join(', ') || '(none)'}`,
     ].join('\n');
+  },
+
+  list: (p) => crud.show(p),
+
+  orphans(p) {
+    const { names } = unassigned(p, store.loadPresets(p));
+    return names.length ? `Unassigned skills (no preset names them):\n${names.map((n) => `  ${n}`).join('\n')}` : 'No unassigned skills.';
   },
 
   add: (p, args, v) => change(p, 'add', args[0], v.yes),
@@ -32,40 +53,11 @@ const COMMANDS = {
   },
 
   rollback: (p, args, v) => apply.rollback(p, v.yes),
+
+  create: (p, args, v) => crud.create(p, args, v),
+  update: (p, args, v) => crud.update(p, args, v),
+  delete: (p, args, v) => crud.remove(p, args, v),
 };
-
-// add/remove: compute the new active list, then reconcile the config root with it.
-function change(p, kind, name, yes) {
-  if (!name) throw new store.UserError(`usage: preset ${kind} <preset>`);
-  const presets = store.loadPresets(p);
-  if (!presets[name]) throw new store.UserError(`preset "${name}" not found`);
-  if (name === 'default') throw new store.UserError('"default" is always on and cannot be added or removed');
-  const active = store.loadActive(p);
-  const names = active.map((a) => a.name);
-  const isActive = names.includes(name);
-  if (kind === 'add' && isActive) return `Preset "${name}" is already active. Nothing to do.`;
-  if (kind === 'remove' && !isActive) return `Preset "${name}" is not active. Nothing to do.`;
-  const next = kind === 'add' ? [...names, name] : names.filter((n) => n !== name);
-  return reconcile(p, presets, active, next, `${kind} "${name}"`, yes);
-}
-
-function reconcile(p, presets, active, next, label, yes) {
-  const settings = store.loadSettings(p);
-  const actions = [...plan.skillActions(p, presets, next, settings), ...plan.blockActions(p, presets, next)];
-  const activeChanged = next.join() !== active.map((a) => a.name).join();
-  if (!actions.length && !activeChanged) return 'Nothing to change.';
-  const bytes = plan.fragmentBytes(p, presets, next);
-  const body = [
-    actions.length ? plan.format(actions) : '  (no changes besides the active list)',
-    bytes ? `Stacked fragment text: ${bytes} bytes (about ${Math.ceil(bytes / 4)} tokens).` : '',
-  ].filter(Boolean).join('\n');
-  if (!yes) return `Plan to ${label} (dry run, nothing written):\n${body}\nRe-run with --yes to apply.`;
-  const since = Object.fromEntries(active.map((a) => [a.name, a.since]));
-  const nextEntries = next.map((name) => ({ name, since: since[name] || today() }));
-  apply.applyChange(p, { actions, nextEntries, settings, desired: plan.desiredBlocks(presets, next) });
-  const restart = actions.some((a) => a.kind.startsWith('block') || a.kind === 'text');
-  return `Done: ${label}.\n${body}\n${apply.restartNotice(restart)}`;
-}
 
 function main(argv) {
   try {
@@ -86,4 +78,4 @@ function main(argv) {
   }
 }
 
-module.exports = { main };
+module.exports = { main, unassigned };

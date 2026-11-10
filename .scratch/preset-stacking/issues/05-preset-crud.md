@@ -4,12 +4,12 @@
 
 **Blocked by:** 03
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] `create` with a name and skills writes a valid definition after confirmation, nothing before
-- [ ] Creating a name that already exists is refused
-- [ ] `update` adds and removes skills and the result shows in `status`
-- [ ] `delete` of an inactive preset removes its definition
-- [ ] `delete` of an active preset deactivates it first and reports that it did
-- [ ] A skill that cannot be found is refused with its name in the message
-- [ ] The managed-skill set follows the definitions after each change
+- [x] `create` with a name and skills writes a valid definition after confirmation, nothing before
+- [x] Creating a name that already exists is refused
+- [x] `update` adds and removes skills and the result shows in `status`
+- [x] `delete` of an inactive preset removes its definition
+- [x] `delete` of an active preset deactivates it first and reports that it did
+- [x] A skill that cannot be found is refused with its name in the message
+- [x] The managed-skill set follows the definitions after each change
