@@ -5,6 +5,11 @@ const path = require('node:path');
 
 class UserError extends Error {}
 
+// A preset or skill name is a plain folder/file name, never a path.
+const NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
+const stamp = () => new Date().toISOString().replace(/[:.]/g, '-');
+const definitionText = (name, description, skills) => `${JSON.stringify({ name, description, skills }, null, 2)}\n`;
+
 function paths(opts) {
   const root = path.resolve(opts.root || path.join(os.homedir(), '.claude'));
   const presets = path.resolve(opts.presets || path.join(__dirname, '..', 'presets'));
@@ -43,7 +48,7 @@ function validatePreset(file, stem, data) {
       throw bad('every skill needs a string "name" and "source"');
     }
     // The name becomes a path under <root>/skills, so it must be a plain folder name.
-    if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(s.name)) throw bad(`invalid skill name "${s.name}"`);
+    if (!NAME.test(s.name)) throw bad(`invalid skill name "${s.name}"`);
   }
 }
 
@@ -84,4 +89,4 @@ function loadSettings(p) {
   return data;
 }
 
-module.exports = { UserError, paths, readJsonFile, loadPresets, loadActive, loadSettings };
+module.exports = { UserError, NAME, stamp, definitionText, paths, readJsonFile, loadPresets, loadActive, loadSettings };

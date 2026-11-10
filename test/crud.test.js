@@ -116,6 +116,24 @@ test('delete of an active preset deactivates it first and says so', (t) => {
   assert.match(r.out, /tdd/); // skills only that preset named are now unassigned
 });
 
+test('delete keeps a copy of the definition and fragment it removes', (t) => {
+  const f = setup(t);
+  h.writeFragment(f, 'engineering', 'My rules.\n');
+  h.run(f, ['delete', 'engineering', '--yes']);
+  const dir = path.join(f.root, 'preset-manager', 'backups');
+  const [saved] = fs.readdirSync(dir).filter((n) => n.endsWith('-deleted-engineering'));
+  assert.ok(saved, 'a -deleted-engineering folder');
+  assert.strictEqual(h.readJson(path.join(dir, saved, 'engineering.json')).name, 'engineering');
+  assert.strictEqual(fs.readFileSync(path.join(dir, saved, 'engineering.md'), 'utf8'), 'My rules.\n');
+});
+
+test('update names the skills it leaves unassigned', (t) => {
+  const f = setup(t);
+  const r = h.run(f, ['update', 'engineering', '--add', 'code-review', '--remove', 'tdd', '--yes']);
+  assert.strictEqual(r.code, 0, r.err);
+  assert.match(r.out, /Now unassigned.*tdd/);
+});
+
 test('default can never be deleted', (t) => {
   const f = setup(t);
   const r = h.run(f, ['delete', 'default', '--yes']);

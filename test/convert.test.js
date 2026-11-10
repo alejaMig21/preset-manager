@@ -213,6 +213,15 @@ test('a setup without the old fragment still converts', (t) => {
   assert.deepStrictEqual(fs.readdirSync(path.join(f.presets, 'fragments')), []);
 });
 
+test('rollback right after convert says there is no backup instead of failing on the convert copy', (t) => {
+  const f = setupOld(t);
+  h.run(f, ['convert', '--yes']);
+  const r = h.run(f, ['rollback', '--yes']);
+  assert.notStrictEqual(r.code, 0);
+  assert.match(r.err, /no backup found/);
+  assert.doesNotMatch(r.err, /ENOENT|invalid JSON/);
+});
+
 test('a missing old folder is reported', (t) => {
   const f = h.fake();
   t.after(() => h.cleanup(f));

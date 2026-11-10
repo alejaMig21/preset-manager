@@ -5,7 +5,7 @@ const store = require('./store');
 const skills = require('./skills');
 const { reconcile } = require('./reconcile');
 
-const NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
+const { NAME, stamp, definitionText } = store;
 const list = (s) => (s ? s.split(',').map((x) => x.trim()).filter(Boolean) : []);
 const fail = (msg) => new store.UserError(msg);
 const names = (arr) => arr.map((s) => s.name).join(', ');
@@ -29,10 +29,7 @@ function resolve(p, specs) {
 }
 
 function write(p, name, description, skillList) {
-  fs.writeFileSync(
-    path.join(p.presets, `${name}.json`),
-    `${JSON.stringify({ name, description, skills: skillList }, null, 2)}\n`,
-  );
+  fs.writeFileSync(path.join(p.presets, `${name}.json`), definitionText(name, description, skillList));
 }
 
 function existing(p, name) {
@@ -55,7 +52,7 @@ function create(p, args, v) {
 function update(p, args, v) {
   const name = args[0];
   if (!name) throw fail('usage: preset update <name> [--add a,b] [--remove c]');
-  const { preset } = existing(p, name);
+  const { presets, preset } = existing(p, name);
   const drop = list(v.remove);
   const missing = drop.filter((n) => !preset.skills.some((s) => s.name === n));
   if (missing.length) throw fail(`preset "${name}" does not contain: ${missing.join(', ')}`);
@@ -66,8 +63,13 @@ function update(p, args, v) {
   if (!v.yes) return `Would update preset "${name}" to skills: ${names(next)}\nRe-run with --yes to write it.`;
   write(p, name, preset.description, next);
   const active = store.loadActive(p).some((a) => a.name === name);
-  return [`Updated preset "${name}": ${names(next)}`, active ? 'The preset is active: run "preset apply --yes" to apply the change.' : '']
-    .filter(Boolean).join('\n');
+  const elsewhere = new Set(Object.values(presets).filter((x) => x.name !== name).flatMap((x) => x.skills.map((s) => s.name)));
+  const unassigned = drop.filter((n) => !elsewhere.has(n) && !next.some((s) => s.name === n));
+  return [
+    `Updated preset "${name}": ${names(next)}`,
+    unassigned.length ? `Now unassigned (left exactly as they are): ${unassigned.join(', ')}` : '',
+    active ? 'The preset is active: run "preset apply --yes" to apply the change.' : '',
+  ].filter(Boolean).join('\n');
 }
 
 function remove(p, args, v) {
@@ -78,7 +80,7 @@ function remove(p, args, v) {
   const active = store.loadActive(p);
   const isActive = active.some((a) => a.name === name);
   const others = new Set(Object.values(presets).filter((x) => x.name !== name).flatMap((x) => x.skills.map((s) => s.name)));
-  const orphaned = preset.skills.filter((s) => !others.has(s.name));
+  const nowUnassigned = preset.skills.filter((s) => !others.has(s.name));
   const lines = [];
   if (isActive) {
     const next = active.map((a) => a.name).filter((n) => n !== name);
@@ -89,10 +91,14 @@ function remove(p, args, v) {
     return lines.join('\n');
   }
   if (isActive) lines.push(`Preset "${name}" was active and has been deactivated.`);
+  const saved = path.join(p.backups, `${stamp()}-deleted-${name}`);
+  fs.mkdirSync(saved, { recursive: true });
+  fs.copyFileSync(path.join(p.presets, `${name}.json`), path.join(saved, `${name}.json`));
+  if (preset.hasFragment) fs.copyFileSync(path.join(p.fragments, `${name}.md`), path.join(saved, `${name}.md`));
   fs.rmSync(path.join(p.presets, `${name}.json`));
   fs.rmSync(path.join(p.fragments, `${name}.md`), { force: true });
   lines.push(`Deleted preset "${name}".`);
-  if (orphaned.length) lines.push(`Now unassigned (left exactly as they are): ${names(orphaned)}`);
+  if (nowUnassigned.length) lines.push(`Now unassigned (left exactly as they are): ${names(nowUnassigned)}`);
   return lines.join('\n');
 }
 

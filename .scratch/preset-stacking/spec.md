@@ -73,15 +73,15 @@ A zero-dependency Node CLI plus a thin skill. Presets become additive and stack:
 - **Managed skills**: the union of skills named in all preset definitions. The off-list is managed skills not named by any active preset.
 - **Default preset**: a normal preset with the four base skills, always applied even if absent from the active list.
 - **Active state**: one global ordered list of preset names with the date each was activated.
-- **Commands** (names are the interface; exact flags settled at build time): status, list, add, remove, create, update, delete, orphans, rollback, convert, hook install. All write commands are dry run unless confirmed.
+- **Commands** (names are the interface; exact flags settled at build time): status, list, add, remove, apply, create, update, delete, unassigned, rollback, convert, hook install. All write commands are dry run unless confirmed.
 - **Apply**: junctions for skills of active presets; skill switches written for managed skills not wanted; one preset block per active preset in the global `CLAUDE.md`, in activation order; unchanged inputs produce unchanged outputs.
 - **Preset blocks**: marked sections in `CLAUDE.md` that each import one fragment; markers are validated as pairs before any edit (ADR 0005).
 - **Junctions**: created only for skills the tool manages; removed only by removing the link itself, never its target; skills whose source is outside `~/.claude` are linked in place (ADR 0003).
 - **Safety**: dry run default, backup before write, validation after write, restore on failure, touch only skill switches, preset blocks and own junctions, no pattern selection (ADR 0004).
 - **Restart notice**: printed after every apply; restart only when a preset block changed.
-- **Orphans**: skills visible under `~/.claude/skills` (top level and groups) that no preset names.
+- **Unassigned skills**: skills visible under `~/.claude/skills` (top level and groups) that no preset names.
 - **Agent proposal**: the skill instructs the agent to show a proposal and wait for approval when grouping on its own; explicit orders run directly after the dry run.
-- **Hook**: a PostToolUse hook that detects a Bash `skills add` run, calls the orphans command and injects context asking the agent to propose a preset; it only nudges. Installed only with approval of the exact `settings.json` change.
+- **Hook**: a PostToolUse hook that detects a Bash `skills add` run, calls the unassigned command and injects context asking the agent to propose a preset; it only nudges. Installed only with approval of the exact `settings.json` change.
 - **Converter**: one-time; backs up, rewrites the 20 existing presets to the new format, drops base copies, off-lists and plugin fields, retires `core` and `engineering_productivity`, splits the stage-table text into engineering and productivity fragments, and creates `prototyping`. Shared rules (the "Cómo seguir" rule, overrides) are placed once per fragment that needs them; duplication when both are stacked is accepted.
 - **Source of truth**: repo definitions win on apply (ADR 0003).
 - **Delivery**: the whole feature ships complete; cutover of the live setup is the last step.
@@ -90,7 +90,7 @@ A zero-dependency Node CLI plus a thin skill. Presets become additive and stack:
 
 - A good test drives the real CLI as a subprocess against a fresh fake config root and asserts only external behaviour: resulting files, printed output and exit code. It never inspects internals.
 - One seam only: the CLI. No unit tests for internal modules.
-- Cases to cover: stacking and removal; default always on; computed off-list limited to managed skills; unassigned skill untouched; create, update, delete presets; orphans listing; dry run changes nothing; backup and rollback; invalid JSON restored; damaged markers refused; junction created, removed, target preserved; broken junction reported; external-source junction; restart notice both cases; idempotent apply; converter on a fake copy of the old format; hook install dry run.
+- Cases to cover: stacking and removal; default always on; computed off-list limited to managed skills; unassigned skill untouched; create, update, delete presets; unassigned listing; dry run changes nothing; backup and rollback; invalid JSON restored; damaged markers refused; junction created, removed, target preserved; broken junction reported; external-source junction; restart notice both cases; idempotent apply; converter on a fake copy of the old format; hook install dry run.
 - Prior art: the `dev-tickets-tree` project (`D:\Projects\AI\dev-tickets-tree`, an earlier project of the owner with a Node tool tested through a fake config dir). It is the model to mirror, not a dependency.
 - Runner: `node --test`, no dependencies.
 

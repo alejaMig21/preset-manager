@@ -1,11 +1,10 @@
 // One-time conversion of the old preset format (one active preset, off-lists, plugins) to the new one.
 const fs = require('node:fs');
 const path = require('node:path');
-const { UserError, readJsonFile } = require('./store');
+const { UserError, readJsonFile, NAME, stamp, definitionText } = require('./store');
 
 const BASE = ['find-skills', 'preset-manager', 'skill-creator', 'dev-journal'];
 const RETIRED = ['core', 'engineering_productivity'];
-const NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 function readOld(dir) {
@@ -141,13 +140,12 @@ function convert(p, yes) {
     created.push(file);
   };
   try {
-    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-    fs.cpSync(p.from, path.join(p.backups, `${stamp}-convert`, 'old-presets'), {
+    fs.cpSync(p.from, path.join(p.backups, `${stamp()}-convert`, 'old-presets'), {
       recursive: true,
       filter: (src) => path.basename(src) !== 'backups',
     });
     for (const [name, d] of Object.entries(defs)) {
-      put(path.join(p.presets, `${name}.json`), `${JSON.stringify({ name, description: d.description, skills: d.skills }, null, 2)}\n`);
+      put(path.join(p.presets, `${name}.json`), definitionText(name, d.description, d.skills));
     }
     for (const [name, text] of Object.entries(fragments)) put(path.join(p.fragments, `${name}.md`), text);
     put(p.activeFile, `${JSON.stringify({ active: activeEntries }, null, 2)}\n`);

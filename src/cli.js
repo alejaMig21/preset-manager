@@ -34,7 +34,7 @@ const COMMANDS = {
 
   list: (p) => crud.show(p),
 
-  orphans(p) {
+  unassigned(p) {
     const { names } = skills.unassigned(p, store.loadPresets(p));
     return names.length ? `Unassigned skills (no preset names them):\n${names.map((n) => `  ${n}`).join('\n')}` : 'No unassigned skills.';
   },

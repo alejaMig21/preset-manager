@@ -75,10 +75,10 @@ test('an unpaired marker makes add refuse and write nothing', (t) => {
 });
 
 test('a closing marker without an opening one is refused', (t) => {
-  const f = setup(t, '# Rules\n<!-- /preset:orphan -->\n');
+  const f = setup(t, '# Rules\n<!-- /preset:stray -->\n');
   const r = h.run(f, ['add', 'engineering']);
   assert.notStrictEqual(r.code, 0);
-  assert.match(r.err, /preset:orphan/);
+  assert.match(r.err, /preset:stray/);
 });
 
 test('a half-written marker is refused', (t) => {

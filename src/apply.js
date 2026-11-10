@@ -1,7 +1,7 @@
 // Writing to the config root, always behind a backup, with validation and rollback.
 const fs = require('node:fs');
 const path = require('node:path');
-const { UserError, readJsonFile } = require('./store');
+const { UserError, readJsonFile, stamp } = require('./store');
 const claudemd = require('./claudemd');
 
 // Files the tool may change besides links; each is backed up before every write.
@@ -48,9 +48,9 @@ function makeBackup(p, actions) {
   let dir;
   try {
     fs.mkdirSync(p.backups, { recursive: true });
-    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-    dir = path.join(p.backups, stamp);
-    for (let i = 1; fs.existsSync(dir); i++) dir = path.join(p.backups, `${stamp}-${i}`);
+    const when = stamp();
+    dir = path.join(p.backups, when);
+    for (let i = 1; fs.existsSync(dir); i++) dir = path.join(p.backups, `${when}-${i}`);
     fs.mkdirSync(dir);
     const manifest = { files: {}, created: [], removed: [], fragments: [] };
     if (fs.existsSync(p.stateFragments)) {
@@ -156,7 +156,10 @@ function writeSettings(p, settings) {
 
 function lastBackup(p) {
   const names = fs.existsSync(p.backups)
-    ? fs.readdirSync(p.backups).filter((n) => !n.endsWith('.rolled-back')).sort()
+    ? fs.readdirSync(p.backups)
+      // Only apply backups carry a manifest; convert and delete copies live here too and are not rolled back.
+      .filter((n) => !n.endsWith('.rolled-back') && fs.existsSync(path.join(p.backups, n, 'manifest.json')))
+      .sort()
     : [];
   if (!names.length) throw new UserError('no backup found, nothing to roll back');
   return path.join(p.backups, names[names.length - 1]);

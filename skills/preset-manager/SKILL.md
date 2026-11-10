@@ -16,7 +16,7 @@ CLI: `node D:\Projects\AI\preset-manager\bin\preset.js` (written `preset` below)
 | create preset X with skills Y and Z | `preset create X --skills Y,Z --description "..."` |
 | change what X contains | `preset update X --add a,b --remove c` |
 | delete X | `preset delete X` |
-| which skills have no preset | `preset orphans` |
+| which skills have no preset | `preset unassigned` |
 | make the active list real again | `preset apply` |
 | undo the last change | `preset rollback` |
 
@@ -34,7 +34,7 @@ Every write is a dry run until `--yes`. Run the dry run, show the plan, then run
 
 Done when the person has approved a proposal.
 
-1. Run `preset orphans` and `preset list`.
+1. Run `preset unassigned` and `preset list`.
 2. Draft a proposal: each skill under an existing preset or under a new preset name.
 3. Show the proposal and wait for the person's yes or corrections.
 4. Apply it with `create` and `update`, each through its dry run.
