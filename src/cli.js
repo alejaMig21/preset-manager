@@ -18,6 +18,9 @@ const OPTIONS = {
   add: { type: 'string' },
   remove: { type: 'string' },
   description: { type: 'string' },
+  plugins: { type: 'string' },
+  'add-plugins': { type: 'string' },
+  'remove-plugins': { type: 'string' },
 };
 
 const COMMANDS = {

@@ -38,5 +38,8 @@
       "name": "google-fonts-skill",
       "source": "design/google-fonts-skill"
     }
+  ],
+  "plugins": [
+    "frontend-design@claude-plugins-official"
   ]
 }

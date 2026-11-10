@@ -74,9 +74,11 @@ function desiredBlocks(presets, activeNames) {
   return [...new Set(['default', ...activeNames])].filter((n) => presets[n].hasFragment);
 }
 
+// Same text, ignoring line endings: git autocrlf rewrites the repo copy without changing what it says.
 function sameFile(a, b) {
   try {
-    return fs.readFileSync(a).equals(fs.readFileSync(b));
+    const text = (f) => fs.readFileSync(f, 'utf8').replace(/\r\n/g, '\n');
+    return text(a) === text(b);
   } catch {
     return false;
   }
@@ -146,4 +148,4 @@ function format(actions) {
     .join('\n');
 }
 
-module.exports = { skillActions, blockActions, pluginActions, unmanagedPlugins, desiredBlocks, fragmentBytes, format };
+module.exports = { skillActions, blockActions, pluginActions, knownPlugins, unmanagedPlugins, desiredBlocks, fragmentBytes, format };

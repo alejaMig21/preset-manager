@@ -147,6 +147,15 @@ test('an edited fragment refreshes its copy and asks for a restart', (t) => {
   );
 });
 
+test('a fragment that differs from its copy only in line endings is not stale', (t) => {
+  const f = setup(t);
+  h.run(f, ['add', 'engineering', '--yes']);
+  h.writeFragment(f, 'engineering', 'Engineering rules.\r\n'); // what git autocrlf does to the repo file
+  const r = h.run(f, ['apply', '--yes']);
+  assert.strictEqual(r.code, 0, r.err);
+  assert.match(r.out, /nothing to change/i);
+});
+
 test('rollback restores CLAUDE.md and the fragment copies', (t) => {
   const f = setup(t);
   h.run(f, ['add', 'engineering', '--yes']);

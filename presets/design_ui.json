@@ -70,5 +70,8 @@
       "name": "bencium-ux-designer",
       "source": "design/bencium-ux-designer"
     }
+  ],
+  "plugins": [
+    "frontend-design@claude-plugins-official"
   ]
 }

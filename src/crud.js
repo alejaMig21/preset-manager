@@ -3,12 +3,24 @@ const fs = require('node:fs');
 const path = require('node:path');
 const store = require('./store');
 const skills = require('./skills');
+const plan = require('./plan');
 const { reconcile } = require('./reconcile');
 
-const { NAME, stamp, definitionText } = store;
+const { NAME, PLUGIN, stamp, definitionText } = store;
 const list = (s) => (s ? s.split(',').map((x) => x.trim()).filter(Boolean) : []);
 const fail = (msg) => new store.UserError(msg);
 const names = (arr) => arr.map((s) => s.name).join(', ');
+const describe = (skillList, plugins) => `skills: ${names(skillList)}${plugins.length ? `; plugins: ${plugins.join(', ')}` : ''}`;
+
+// A plugin id must be well formed and known to Claude Code (installed or already in enabledPlugins).
+function checkPlugins(p, ids) {
+  const known = plan.knownPlugins(p, store.loadSettings(p));
+  for (const id of ids) {
+    if (!PLUGIN.test(id)) throw fail(`invalid plugin id "${id}" (expected name@marketplace)`);
+    if (!known.has(id)) throw fail(`plugin "${id}" is not installed`);
+  }
+  return ids;
+}
 
 // "name" is found among the installed skills; "name=source" is taken as given after checking it.
 function resolve(p, specs) {
@@ -28,8 +40,8 @@ function resolve(p, specs) {
   });
 }
 
-function write(p, name, description, skillList) {
-  fs.writeFileSync(path.join(p.presets, `${name}.json`), definitionText(name, description, skillList));
+function write(p, name, description, skillList, plugins) {
+  fs.writeFileSync(path.join(p.presets, `${name}.json`), definitionText(name, description, skillList, plugins));
 }
 
 function existing(p, name) {
@@ -44,9 +56,10 @@ function create(p, args, v) {
   if (fs.existsSync(path.join(p.presets, `${name}.json`))) throw fail(`preset "${name}" already exists`);
   const picked = resolve(p, list(v.skills));
   if (!picked.length) throw fail('a preset needs at least one skill: pass --skills a,b');
-  if (!v.yes) return `Would create preset "${name}" with skills: ${names(picked)}\nRe-run with --yes to write it.`;
-  write(p, name, v.description || '', picked);
-  return `Created preset "${name}" with skills: ${names(picked)}`;
+  const plugins = checkPlugins(p, list(v.plugins));
+  if (!v.yes) return `Would create preset "${name}" with ${describe(picked, plugins)}\nRe-run with --yes to write it.`;
+  write(p, name, v.description || '', picked, plugins);
+  return `Created preset "${name}" with ${describe(picked, plugins)}`;
 }
 
 function update(p, args, v) {
@@ -60,13 +73,18 @@ function update(p, args, v) {
   const added = resolve(p, list(v.add)).filter((s) => !kept.some((k) => k.name === s.name));
   const next = [...kept, ...added];
   if (!next.length) throw fail(`a preset needs at least one skill; use "preset delete ${name}" instead`);
-  if (!v.yes) return `Would update preset "${name}" to skills: ${names(next)}\nRe-run with --yes to write it.`;
-  write(p, name, preset.description, next);
+  const dropPlugins = list(v['remove-plugins']);
+  const notListed = dropPlugins.filter((id) => !preset.plugins.includes(id));
+  if (notListed.length) throw fail(`preset "${name}" does not list the plugin: ${notListed.join(', ')}`);
+  const keptPlugins = preset.plugins.filter((id) => !dropPlugins.includes(id));
+  const nextPlugins = [...keptPlugins, ...checkPlugins(p, list(v['add-plugins'])).filter((id) => !keptPlugins.includes(id))];
+  if (!v.yes) return `Would update preset "${name}" to ${describe(next, nextPlugins)}\nRe-run with --yes to write it.`;
+  write(p, name, preset.description, next, nextPlugins);
   const active = store.loadActive(p).some((a) => a.name === name);
   const elsewhere = new Set(Object.values(presets).filter((x) => x.name !== name).flatMap((x) => x.skills.map((s) => s.name)));
   const unassigned = drop.filter((n) => !elsewhere.has(n) && !next.some((s) => s.name === n));
   return [
-    `Updated preset "${name}": ${names(next)}`,
+    `Updated preset "${name}": ${describe(next, nextPlugins)}`,
     unassigned.length ? `Now unassigned (left exactly as they are): ${unassigned.join(', ')}` : '',
     active ? 'The preset is active: run "preset apply --yes" to apply the change.' : '',
   ].filter(Boolean).join('\n');
@@ -106,7 +124,7 @@ function show(p) {
   const presets = store.loadPresets(p);
   const active = new Set(store.loadActive(p).map((a) => a.name));
   return Object.values(presets)
-    .map((x) => `${x.name}: ${names(x.skills)}${active.has(x.name) ? ' [active]' : ''}`)
+    .map((x) => `${x.name}: ${names(x.skills)}${x.plugins.length ? ` | plugins: ${x.plugins.join(', ')}` : ''}${active.has(x.name) ? ' [active]' : ''}`)
     .join('\n');
 }
 

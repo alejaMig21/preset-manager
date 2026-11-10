@@ -6,8 +6,8 @@
 
 **Status:** ready-for-agent
 
-- [ ] `create --plugins` writes the plugins into the definition and refuses an unknown one
-- [ ] `update --add-plugins` and `--remove-plugins` change only the plugin list; removing one that is not listed is refused
-- [ ] `list` shows plugins next to skills
-- [ ] The repo definitions carry the plugins listed above
+- [x] `create --plugins` writes the plugins into the definition and refuses an unknown one
+- [x] `update --add-plugins` and `--remove-plugins` change only the plugin list; removing one that is not listed is refused
+- [x] `list` shows plugins next to skills
+- [x] The repo definitions carry the plugins listed above
 - [ ] The real dry run was shown and the exact change approved before any write
