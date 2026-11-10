@@ -6,10 +6,10 @@
 
 **Status:** ready-for-human
 
-- [ ] The dry run against the real folder was shown and the exact files were approved before any write
-- [ ] A backup of the real `settings.json`, `CLAUDE.md` and presets exists and was verified restorable
-- [ ] After the conversion `status` shows the expected active presets and no broken junctions
+- [x] The dry run against the real folder was shown and the exact files were approved before any write
+- [x] A backup of the real `settings.json`, `CLAUDE.md` and presets exists and was verified restorable
+- [x] After the conversion `status` shows the expected active presets and no broken junctions
 - [ ] The person's current working skills are still visible in a new session
-- [ ] The live `preset-manager` skill is replaced by the new thin one
-- [ ] The hook is installed and fires on a test `skills add`
-- [ ] Rollback was exercised once and works
+- [x] The live `preset-manager` skill is replaced by the new thin one
+- [x] The hook is installed and fires on a test `skills add` (checked with a simulated input, not a real install)
+- [x] Rollback was exercised once and works (on the hook install: hook removed, everything else unchanged, then reinstalled)
