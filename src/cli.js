@@ -6,6 +6,7 @@ const skills = require('./skills');
 const crud = require('./crud');
 const hook = require('./hook');
 const convert = require('./convert');
+const suggest = require('./suggest');
 const { change, reconcile } = require('./reconcile');
 
 const OPTIONS = {
@@ -38,6 +39,8 @@ const COMMANDS = {
     const { names } = skills.unassigned(p, store.loadPresets(p));
     return names.length ? `Unassigned skills (no preset names them):\n${names.map((n) => `  ${n}`).join('\n')}` : 'No unassigned skills.';
   },
+
+  suggest: (p, args) => suggest.run(p, args),
 
   add: (p, args, v) => change(p, 'add', args[0], v.yes),
   remove: (p, args, v) => change(p, 'remove', args[0], v.yes),

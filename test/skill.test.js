@@ -37,4 +37,8 @@ test('the skill states the dry-run rule, the proposal rule and the restart notic
   assert.match(t, /proposal/i);
   assert.match(t, /restart/i);
   assert.match(t, /GLOSSARY\.md/);
+  // every proposal carries a verdict per skill, built on `preset suggest` evidence
+  assert.match(t, /`preset suggest/);
+  assert.match(t, /verdict/i);
+  assert.match(t, /\bcovered\b/i);
 });

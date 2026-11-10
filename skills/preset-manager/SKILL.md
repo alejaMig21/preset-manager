@@ -17,6 +17,7 @@ CLI: `node D:\Projects\AI\preset-manager\bin\preset.js` (written `preset` below)
 | change what X contains | `preset update X --add a,b --remove c` |
 | delete X | `preset delete X` |
 | which skills have no preset | `preset unassigned` |
+| where an unassigned skill belongs, or whether it is needed | `preset suggest [skill...]` |
 | make the active list real again | `preset apply` |
 | undo the last change | `preset rollback` |
 
@@ -34,9 +35,13 @@ Every write is a dry run until `--yes`. Run the dry run, show the plan, then run
 
 Done when the person has approved a proposal.
 
-1. Run `preset unassigned` and `preset list`.
-2. Draft a proposal: each skill under an existing preset or under a new preset name.
-3. Show the proposal and wait for the person's yes or corrections.
-4. Apply it with `create` and `update`, each through its dry run.
+1. Run `preset suggest` (evidence for every unassigned skill) and `preset list`.
+2. Give every skill a verdict from that evidence:
+   - **covered**: a skill of an existing preset, or a "beats" statement in a preset text, already replaces it. Name that skill and propose leaving it unassigned.
+   - **fits an existing preset**: name the preset.
+   - **new preset**: only for skills that fit none; group them by what they do.
+3. Show the proposal as skill, verdict, evidence line. Say where the evidence is thin.
+4. Wait for the person's yes or corrections.
+5. Apply it with `create` and `update`, each through its dry run.
 
 A hook can also report unassigned skills after a `skills add`: handle it the same way, starting at step 1.

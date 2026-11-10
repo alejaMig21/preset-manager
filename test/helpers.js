@@ -42,10 +42,11 @@ function writeFragment(f, name, text) {
 }
 
 // A real skill folder: <root>/skills/<group>/<name>, or <root>/skills/<name> when group is null.
-function makeSkill(f, name, group = null) {
+function makeSkill(f, name, group = null, description = null) {
   const dir = group ? path.join(f.root, 'skills', group, name) : path.join(f.root, 'skills', name);
   fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'SKILL.md'), `---\nname: ${name}\n---\n`);
+  const desc = description ? `description: ${description}\n` : '';
+  fs.writeFileSync(path.join(dir, 'SKILL.md'), `---\nname: ${name}\n${desc}---\n`);
   return dir;
 }
 
