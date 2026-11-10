@@ -1,0 +1,9 @@
+{
+  "name": "preset-manager",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Stack presets of Claude Code skills and text.",
+  "bin": { "preset": "bin/preset.js" },
+  "scripts": { "test": "node --test" },
+  "engines": { "node": ">=20" }
+}
