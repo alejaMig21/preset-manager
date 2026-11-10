@@ -1,10 +1,14 @@
 ## Start here
 
-This repo will become the home of `preset-manager`: stacking N presets of Claude Code skills, plugins and text. Nothing is built yet.
+`preset-manager` is a Node CLI (`bin/preset.js`, zero dependencies) plus a thin skill (`skills/preset-manager/`). It stacks presets of Claude Code skills, plugins and text onto `~/.claude`. Read `GLOSSARY.md` for the terms and `docs/adr/` for the decisions before changing behaviour. The spec and the tickets are in `.scratch/preset-stacking/`.
 
-- If the person says "do the grill" (or "haz el grill", or anything close): read `docs/grill-brief.md` and `GLOSSARY.md`, then run the `grilling` skill on the agenda in the brief. Do not ask for context: the brief holds it. Follow its "Question style" and "Order override": start from the person's goal (several presets on at once), never from implementation, and define every term under each question.
-- `snapshot/2026-11-09/` is a read-only copy of the live setup (`~/.claude/skills/preset-manager/SKILL.md`, `~/.claude/presets/`). The live files in `~/.claude` stay the source of truth until this project replaces them.
-- Never write inside `~/.claude` from this repo's sessions unless the person approves the exact files first.
+## Working here
+
+- Run the tests with `node --test`. They drive the real CLI against a fake `--root` folder and check only files, output and exit code (ADR 0004). Add new behaviour the same way, test first.
+- Never write inside `~/.claude` from this repo's sessions unless the person approves the exact change. Every CLI command that writes is a dry run until `--yes`: show the plan, get the yes, then run it.
+- Preset definitions live in `presets/` here and are applied onto `~/.claude`; the repo wins on every apply.
+- The live skill `~/.claude/skills/preset-manager` is a junction to `skills/preset-manager/` here, and the hook in `~/.claude/settings.json` calls `bin/preset.js`. Keep this repo at its current path.
+- `snapshot/2026-11-09/` is a read-only copy of the setup before this system replaced it. `docs/grill-brief.md` is the history of the design grill, superseded by the ADRs.
 
 ## Agent skills
 
